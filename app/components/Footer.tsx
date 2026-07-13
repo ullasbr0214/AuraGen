@@ -1,7 +1,9 @@
+"use client";
+
 export default function Footer() {
   return (
-    <div className="text-center text-gray-500 py-6">
-      © 2026 AuraGen
-    </div>
+    <footer className="mt-10 border-t border-slate-800 py-6 text-center text-sm text-slate-400">
+      <p>© 2026 AuraGen • Self-Healing Generative UI via Cognitive Load</p>
+    </footer>
   );
 }

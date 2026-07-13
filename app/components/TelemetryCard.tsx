@@ -1,5 +1,14 @@
 "use client";
 
+import {
+  MousePointer2,
+  Gauge,
+  Mouse,
+  ScrollText,
+  Keyboard,
+  Timer,
+} from "lucide-react";
+
 type TelemetryCardProps = {
   mouseX: number;
   mouseY: number;
@@ -10,6 +19,37 @@ type TelemetryCardProps = {
   scrollCount: number;
   keyPresses: number;
 };
+
+const telemetry = (
+  title: string,
+  value: string | number,
+  icon: React.ReactNode,
+  color: string
+) => (
+  <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition hover:border-cyan-500/30 hover:bg-slate-800">
+
+    <div className="flex items-center gap-3">
+
+      <div className={`rounded-xl p-3 ${color}`}>
+        {icon}
+      </div>
+
+      <div>
+
+        <p className="text-sm text-slate-400">
+          {title}
+        </p>
+
+        <h3 className="text-xl font-bold text-white">
+          {value}
+        </h3>
+
+      </div>
+
+    </div>
+
+  </div>
+);
 
 export default function TelemetryCard({
   mouseX,
@@ -22,46 +62,91 @@ export default function TelemetryCard({
   keyPresses,
 }: TelemetryCardProps) {
   return (
-    <div className="bg-slate-900 rounded-2xl p-6 shadow-lg border border-slate-700">
-      <h2 className="text-xl font-bold text-white mb-5">
-        📊 Telemetry Tracker
-      </h2>
+    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl">
 
-      <div className="grid grid-cols-2 gap-y-4 text-gray-300">
+      {/* Header */}
 
-        <span>Mouse X</span>
-        <span className="text-right">{mouseX}</span>
+      <div className="mb-8 flex items-center justify-between">
 
-        <span>Mouse Y</span>
-        <span className="text-right">{mouseY}</span>
+        <div>
 
-        <span>Velocity</span>
-        <span className="text-right">{velocity} px/s</span>
+          <h2 className="text-2xl font-bold text-white">
+            Live Telemetry Engine
+          </h2>
 
-        <span>Total Clicks</span>
-        <span className="text-right">{clicks}</span>
+          <p className="mt-1 text-slate-400">
+            Real-time user interaction monitoring
+          </p>
 
-        <span>Rapid Clicks</span>
-        <span className="text-right">{rapidClicks}</span>
+        </div>
 
-        <span>Hesitation Time</span>
-        <span className="text-right">{hesitationTime} sec</span>
+        <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-2">
 
-        <span>Scroll Count</span>
-        <span className="text-right">{scrollCount}</span>
+          <div className="h-3 w-3 animate-pulse rounded-full bg-green-400"></div>
 
-        <span>Key Presses</span>
-        <span className="text-right">{keyPresses}</span>
+          <span className="text-sm font-semibold text-green-300">
+            Monitoring
+          </span>
+
+        </div>
 
       </div>
 
-      <div className="mt-6 flex items-center gap-2">
-        <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
-        <span className="text-green-400 font-semibold">
-          Monitoring
-        </span>
+      {/* Grid */}
+
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+
+        {telemetry(
+          "Mouse Position",
+          `${mouseX}, ${mouseY}`,
+          <MousePointer2 className="text-cyan-300" />,
+          "bg-cyan-500/10"
+        )}
+
+        {telemetry(
+          "Velocity",
+          `${velocity} px/s`,
+          <Gauge className="text-blue-300" />,
+          "bg-blue-500/10"
+        )}
+
+        {telemetry(
+          "Clicks",
+          clicks,
+          <Mouse className="text-violet-300" />,
+          "bg-violet-500/10"
+        )}
+
+        {telemetry(
+          "Rapid Clicks",
+          rapidClicks,
+          <Mouse className="text-red-300" />,
+          "bg-red-500/10"
+        )}
+
+        {telemetry(
+          "Scroll Events",
+          scrollCount,
+          <ScrollText className="text-orange-300" />,
+          "bg-orange-500/10"
+        )}
+
+        {telemetry(
+          "Keyboard",
+          keyPresses,
+          <Keyboard className="text-green-300" />,
+          "bg-green-500/10"
+        )}
+
+        {telemetry(
+          "Hesitation",
+          `${hesitationTime}s`,
+          <Timer className="text-yellow-300" />,
+          "bg-yellow-500/10"
+        )}
+
       </div>
-    </div>
+
+    </section>
   );
 }
-``
