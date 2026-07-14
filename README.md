@@ -225,6 +225,6 @@ B.E. Artificial Intelligence & Machine Learning
 
 ---
 
-## ⭐ Project Vision
+## ⭐ Project Vision 
 
 > Build intelligent user interfaces that understand user behavior, reduce cognitive load, and adapt in real time to create a smarter and more accessible digital experience.
