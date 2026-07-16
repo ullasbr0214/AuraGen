@@ -9,21 +9,42 @@ const SOCKET_URL =
 
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io(SOCKET_URL, {
-  transports: ["websocket"],
-  reconnection: true,
-});
+    console.log("🚀 Initializing Socket.IO...");
 
-    socket.on("connect", () => {
-      console.log("✅ Connected:", socket?.id);
+    socket = io(SOCKET_URL, {
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 10000,
+      forceNew: false,
+      autoConnect: true,
     });
 
-    socket.on("disconnect", () => {
-      console.log("❌ Disconnected");
+    socket.on("connect", () => {
+      console.log("✅ Socket Connected");
+      console.log("Socket ID:", socket?.id);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("❌ Socket Disconnected");
+      console.log("Reason:", reason);
     });
 
     socket.on("connect_error", (err) => {
-      console.error("Socket Error:", err.message);
+      console.error("❌ Socket Connection Error:", err.message);
+    });
+
+    socket.on("error", (err) => {
+      console.error("❌ Socket Error:", err);
+    });
+
+    socket.io.on("reconnect", (attempt) => {
+      console.log(`🔄 Reconnected after ${attempt} attempt(s)`);
+    });
+
+    socket.io.on("reconnect_error", (err) => {
+      console.error("❌ Reconnect Error:", err.message);
     });
   }
 
