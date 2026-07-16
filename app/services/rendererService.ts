@@ -1,31 +1,39 @@
+"use client";
+
+import { getSocket } from "./socket";
+
 export type GeneratedComponent = {
   id: number;
   title: string;
   description: string;
 };
 
-export async function fetchGeneratedComponents(): Promise<GeneratedComponent[]> {
-  // Simulate AI generation delay
-  await new Promise((resolve) => setTimeout(resolve, 2500));
+export function subscribeToGeneratedComponents(
+  onNewComponent: (item: GeneratedComponent) => void
+) {
+  const socket = getSocket();
 
-  return [
-    {
-      id: 1,
-      title: "Adaptive Dashboard",
-      description:
-        "AI generated a simplified dashboard layout based on cognitive load.",
-    },
-    {
-      id: 2,
-      title: "Telemetry Widget",
-      description:
-        "Live telemetry visualization successfully injected.",
-    },
-    {
-      id: 3,
-      title: "AI Recommendation Panel",
-      description:
-        "Dynamic recommendation widget generated.",
-    },
-  ];
+  let counter = 0;
+
+  function handleComponent(result: {
+    success: boolean;
+    jsx?: string;
+    error?: string;
+  }) {
+    if (!result.success) return;
+
+    counter++;
+
+    onNewComponent({
+      id: counter,
+      title: `Generated Component #${counter}`,
+      description: "AI-generated React component received successfully.",
+    });
+  }
+
+  socket.on("component", handleComponent);
+
+  return () => {
+    socket.off("component", handleComponent);
+  };
 }

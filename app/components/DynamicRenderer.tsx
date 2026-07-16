@@ -6,7 +6,7 @@ import {
   LayoutPanelTop,
   CheckCircle2,
 } from "lucide-react";
- import { fetchGeneratedComponents } from "../services/rendererService";
+ import { subscribeToGeneratedComponents } from "../services/rendererService";
 
 type GeneratedComponent = {
   id: number;
@@ -18,12 +18,10 @@ export default function DynamicRenderer() {
   const [components, setComponents] = useState<GeneratedComponent[]>([]);
 
 useEffect(() => {
-  async function loadComponents() {
-    const result = await fetchGeneratedComponents();
-    setComponents(result);
-  }
-
-  loadComponents();
+  const unsubscribe = subscribeToGeneratedComponents((item) => {
+    setComponents((prev) => [...prev, item]);
+  });
+  return unsubscribe;
 }, []);
 
   return (

@@ -1,22 +1,57 @@
-export async function generateAuraCode(prompt: string) {
-  await new Promise((resolve) => setTimeout(resolve, 1200));
+"use client";
 
-  return {
-    response: `✨ Aura generated code for: "${prompt}"`,
+import { getSocket } from "./socket";
 
-    code: `// AI Generated Code
+type ComponentResult = {
+  success: boolean;
+  jsx?: string;
+  error?: string;
+};
 
-// Prompt:
-${prompt}
+type AuraCodeResult = {
+  response: string;
+  code: string;
+};
 
-export default function Example() {
-  return (
-    <div className="p-8">
-      <h1>Hello from AuraGen 🚀</h1>
-      <p>This code was generated for:</p>
-      <strong>${prompt}</strong>
-    </div>
-  );
-}`,
+export function generateAuraCode(
+  prompt: string,
+  telemetry?: {
+    hesitation: number;
+    clicks: number;
+  }
+): Promise<AuraCodeResult> {
+  const socket = getSocket();
+
+  const payload = {
+    hesitation: telemetry?.hesitation ?? 3,
+    clicks: telemetry?.clicks ?? 0,
+    prompt,
   };
+
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      socket.off("component", handleComponent);
+      reject(new Error("AI generation timed out."));
+    }, 20000);
+
+    function handleComponent(result: ComponentResult) {
+      clearTimeout(timeout);
+
+      socket.off("component", handleComponent);
+
+      if (!result.success) {
+        reject(new Error(result.error || "Generation failed"));
+        return;
+      }
+
+      resolve({
+        response: `✨ Aura generated code for "${prompt}"`,
+        code: result.jsx || "",
+      });
+    }
+
+    socket.on("component", handleComponent);
+
+    socket.emit("telemetry", payload);
+  });
 }
