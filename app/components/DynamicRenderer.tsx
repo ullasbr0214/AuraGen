@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import {
-  Sparkles,
   LayoutPanelTop,
   CheckCircle2,
+  Sparkles,
 } from "lucide-react";
- import { subscribeToGeneratedComponents } from "../services/rendererService";
+
+import {
+  subscribeToGeneratedComponents,
+} from "../services/rendererService";
 
 type GeneratedComponent = {
   id: number;
@@ -15,81 +18,84 @@ type GeneratedComponent = {
 };
 
 export default function DynamicRenderer() {
+
   const [components, setComponents] = useState<GeneratedComponent[]>([]);
 
-useEffect(() => {
-  const unsubscribe = subscribeToGeneratedComponents((item) => {
-    setComponents((prev) => [...prev, item]);
-  });
-  return unsubscribe;
-}, []);
+  useEffect(() => {
+
+    const unsubscribe = subscribeToGeneratedComponents((component) => {
+
+      setComponents((prev) => [...prev, component]);
+
+    });
+
+    return unsubscribe;
+
+  }, []);
 
   return (
-    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">
 
-      {/* Header */}
+    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6">
 
       <div className="flex items-center justify-between">
 
-        <div>
+        <h2 className="flex items-center gap-3 text-2xl font-bold">
 
-          <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
-            <LayoutPanelTop className="text-cyan-400" />
-            Dynamic Renderer
-          </h2>
+          <LayoutPanelTop />
 
-          <p className="mt-1 text-sm text-slate-400">
-            AI-generated UI components appear here.
-          </p>
+          Dynamic Renderer
 
-        </div>
+        </h2>
 
-        <div className="rounded-full bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
-          Renderer Ready
-        </div>
+        <span className="rounded-full bg-green-500/10 px-3 py-2 text-green-400">
+
+          Live
+
+        </span>
 
       </div>
-
-      {/* Components */}
 
       <div className="mt-6 space-y-4">
 
         {components.length === 0 ? (
 
-          <div className="rounded-2xl border border-dashed border-cyan-500/20 p-8 text-center">
+          <div className="rounded-xl border border-dashed border-cyan-400 p-10 text-center">
 
-            <Sparkles
-              className="mx-auto text-cyan-400"
-              size={36}
-            />
+            <Sparkles className="mx-auto" size={40} />
 
-            <p className="mt-4 text-slate-300">
-              Waiting for AI generated components...
+            <p className="mt-3">
+
+              Waiting for AI Generated Components...
+
             </p>
 
           </div>
 
         ) : (
 
-          components.map((item) => (
+          components.map((component) => (
 
             <div
-              key={item.id}
-              className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition hover:border-cyan-500/20"
+              key={component.id}
+              className="rounded-xl border border-slate-700 bg-slate-800 p-5"
             >
 
               <div className="flex items-center gap-3">
 
-                <CheckCircle2 className="text-green-400" />
+                <CheckCircle2 className="text-green-400"/>
 
-                <h3 className="font-semibold text-white">
-                  {item.title}
+                <h3>
+
+                  {component.title}
+
                 </h3>
 
               </div>
 
               <p className="mt-3 text-slate-400">
-                {item.description}
+
+                {component.description}
+
               </p>
 
             </div>
@@ -101,5 +107,7 @@ useEffect(() => {
       </div>
 
     </section>
+
   );
+
 }

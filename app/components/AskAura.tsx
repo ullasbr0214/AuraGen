@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { useAura } from "../context/AuraContext";
+import { useTelemetryContext } from "../context/TelemetryContext";
 import { generateAuraCode } from "../services/aiService";
 import LoadingOverlay from "./LoadingOverlay";
 
@@ -20,6 +21,8 @@ export default function AskAura() {
     setResponse,
     setGeneratedCode,
   } = useAura();
+
+  const { telemetry } = useTelemetryContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -39,13 +42,24 @@ export default function AskAura() {
     setLoading(true);
 
     try {
-      const result = await generateAuraCode(prompt);
+      const result = await generateAuraCode(prompt, {
+        hesitation: telemetry.hesitationTime,
+        clicks: telemetry.clicks,
+      });
 
       setResponse(result.response);
       setGeneratedCode(result.code);
+
+      // Optional: clear prompt after successful generation
+      setPrompt("");
     } catch (error) {
       console.error(error);
-      setResponse("❌ Failed to generate code.");
+
+      setResponse(
+        error instanceof Error
+          ? `❌ ${error.message}`
+          : "❌ Unable to connect to Aura Backend."
+      );
     } finally {
       setLoading(false);
     }
@@ -55,15 +69,12 @@ export default function AskAura() {
     <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">
 
       {/* Header */}
-
       <div className="flex items-center gap-3">
-
         <div className="rounded-xl bg-cyan-500/10 p-3">
           <Sparkles className="text-cyan-400" />
         </div>
 
         <div>
-
           <h2 className="text-2xl font-bold text-white">
             Aura AI Copilot
           </h2>
@@ -71,17 +82,12 @@ export default function AskAura() {
           <p className="text-slate-400">
             Describe the interface you want AuraGen to generate.
           </p>
-
         </div>
-
       </div>
 
       {/* Suggestions */}
-
       <div className="mt-6 flex flex-wrap gap-3">
-
         {suggestions.map((item) => (
-
           <button
             key={item}
             onClick={() => setPrompt(item)}
@@ -89,13 +95,10 @@ export default function AskAura() {
           >
             {item}
           </button>
-
         ))}
-
       </div>
 
       {/* Prompt */}
-
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
@@ -105,23 +108,20 @@ export default function AskAura() {
       />
 
       {/* Footer */}
-
       <div className="mt-6 flex items-center justify-between">
 
         <div className="flex items-center gap-2 text-slate-400">
-
           <Lightbulb size={18} />
 
           <span className="text-sm">
             AI uses your prompt to generate React components.
           </span>
-
         </div>
 
         <button
           onClick={generateCode}
           disabled={loading}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-6 py-3 font-semibold text-white transition hover:scale-105 disabled:opacity-70"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-6 py-3 font-semibold text-white transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {loading ? (
             <>
@@ -139,7 +139,6 @@ export default function AskAura() {
       </div>
 
       {/* AI Pipeline */}
-
       <div className="mt-8 rounded-2xl border border-cyan-500/10 bg-slate-800/50 p-5">
 
         <div className="flex items-center gap-3">
@@ -147,7 +146,6 @@ export default function AskAura() {
           <Wand2 className="text-cyan-400" />
 
           <div>
-
             <h3 className="font-semibold text-white">
               AI Generation Pipeline
             </h3>
@@ -155,7 +153,6 @@ export default function AskAura() {
             <p className="mt-1 text-sm text-slate-400">
               Prompt → AI Model → React Component → Dynamic Renderer
             </p>
-
           </div>
 
         </div>

@@ -5,6 +5,7 @@ import { getSocket } from "./socket";
 type ComponentResult = {
   success: boolean;
   jsx?: string;
+  explanation?: string;
   error?: string;
 };
 
@@ -22,36 +23,56 @@ export function generateAuraCode(
 ): Promise<AuraCodeResult> {
   const socket = getSocket();
 
-  const payload = {
-    hesitation: telemetry?.hesitation ?? 3,
-    clicks: telemetry?.clicks ?? 0,
-    prompt,
-  };
-
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       socket.off("component", handleComponent);
-      reject(new Error("AI generation timed out."));
+
+      reject(
+        new Error(
+          "Timeout: Backend did not respond within 20 seconds."
+        )
+      );
     }, 20000);
 
     function handleComponent(result: ComponentResult) {
+      console.log("✅ Component received:", result);
+
       clearTimeout(timeout);
 
       socket.off("component", handleComponent);
 
       if (!result.success) {
-        reject(new Error(result.error || "Generation failed"));
+        reject(
+          new Error(
+            result.error || "Backend failed to generate UI."
+          )
+        );
         return;
       }
 
       resolve({
-        response: `✨ Aura generated code for "${prompt}"`,
+        response:
+          result.explanation ||
+          "✅ Aura successfully generated the component.",
+
         code: result.jsx || "",
       });
     }
 
     socket.on("component", handleComponent);
 
-    socket.emit("telemetry", payload);
+    console.log("📤 Sending telemetry to backend...");
+
+    console.log({
+      prompt,
+      hesitation: telemetry?.hesitation ?? 3,
+      clicks: telemetry?.clicks ?? 5,
+    });
+
+    socket.emit("telemetry", {
+      prompt,
+      hesitation: telemetry?.hesitation ?? 3,
+      clicks: telemetry?.clicks ?? 5,
+    });
   });
 }

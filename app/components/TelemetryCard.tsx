@@ -20,36 +20,38 @@ type TelemetryCardProps = {
   keyPresses: number;
 };
 
-const telemetry = (
+function TelemetryItem(
   title: string,
   value: string | number,
   icon: React.ReactNode,
   color: string
-) => (
-  <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition hover:border-cyan-500/30 hover:bg-slate-800">
+) {
+  return (
+    <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition hover:border-cyan-500/30 hover:bg-slate-800">
 
-    <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3">
 
-      <div className={`rounded-xl p-3 ${color}`}>
-        {icon}
-      </div>
+        <div className={`rounded-xl p-3 ${color}`}>
+          {icon}
+        </div>
 
-      <div>
+        <div>
 
-        <p className="text-sm text-slate-400">
-          {title}
-        </p>
+          <p className="text-sm text-slate-400">
+            {title}
+          </p>
 
-        <h3 className="text-xl font-bold text-white">
-          {value}
-        </h3>
+          <h3 className="text-xl font-bold text-white">
+            {value}
+          </h3>
+
+        </div>
 
       </div>
 
     </div>
-
-  </div>
-);
+  );
+}
 
 export default function TelemetryCard({
   mouseX,
@@ -96,51 +98,51 @@ export default function TelemetryCard({
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
-        {telemetry(
+        {TelemetryItem(
           "Mouse Position",
           `${mouseX}, ${mouseY}`,
           <MousePointer2 className="text-cyan-300" />,
           "bg-cyan-500/10"
         )}
 
-        {telemetry(
-          "Velocity",
-          `${velocity} px/s`,
+        {TelemetryItem(
+          "Mouse Velocity",
+          `${velocity.toFixed(2)} px/s`,
           <Gauge className="text-blue-300" />,
           "bg-blue-500/10"
         )}
 
-        {telemetry(
-          "Clicks",
+        {TelemetryItem(
+          "Total Clicks",
           clicks,
           <Mouse className="text-violet-300" />,
           "bg-violet-500/10"
         )}
 
-        {telemetry(
+        {TelemetryItem(
           "Rapid Clicks",
           rapidClicks,
           <Mouse className="text-red-300" />,
           "bg-red-500/10"
         )}
 
-        {telemetry(
+        {TelemetryItem(
           "Scroll Events",
           scrollCount,
           <ScrollText className="text-orange-300" />,
           "bg-orange-500/10"
         )}
 
-        {telemetry(
-          "Keyboard",
+        {TelemetryItem(
+          "Key Presses",
           keyPresses,
           <Keyboard className="text-green-300" />,
           "bg-green-500/10"
         )}
 
-        {telemetry(
-          "Hesitation",
-          `${hesitationTime}s`,
+        {TelemetryItem(
+          "Hesitation Time",
+          `${hesitationTime.toFixed(1)} s`,
           <Timer className="text-yellow-300" />,
           "bg-yellow-500/10"
         )}

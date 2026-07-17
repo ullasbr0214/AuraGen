@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import Navbar from "./Navbar";
 import WelcomeCard from "./WelcomeCard";
 import TelemetryTracker from "./TelemetryTracker";
@@ -11,66 +13,92 @@ import SelfHealingEngine from "./SelfHealingEngine";
 import ErrorBoundary from "./ErrorBoundary";
 import CognitiveGauge from "./CognitiveGauge";
 import ResponseCard from "./ResponseCard";
-import useTelemetry from "../hooks/useTelemetry";
 import Footer from "./Footer";
 
+import { getSocket } from "../services/socket";
+import { useTelemetryContext } from "../context/TelemetryContext";
+
 export default function Dashboard() {
-  const { cognitiveLoad } = useTelemetry();
+
+  const { telemetry } = useTelemetryContext();
+
+  useEffect(() => {
+  getSocket();
+}, []);
+  const cognitiveLoad = Math.min(
+    100,
+    Math.round(
+      telemetry.clicks * 3 +
+      telemetry.rapidClicks * 5 +
+      telemetry.hesitationTime / 10 +
+      telemetry.velocity / 8
+    )
+  );
 
   return (
+
     <div className="min-h-screen bg-transparent text-white p-8">
 
-      {/* Navbar */}
       <Navbar />
 
-      {/* Welcome Section */}
       <section className="mt-8">
+
         <WelcomeCard />
+
       </section>
 
-      {/* AI Analytics */}
       <section className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
 
-        {/* Cognitive Load */}
         <CognitiveGauge />
 
-        {/* Week 3 Components */}
-        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white">
-            Stress Analytics
-          </h3>
+        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6">
 
-          <p className="mt-2 text-sm text-slate-400">
-            Live stress analysis will appear here.
+          <h2 className="font-bold">Stress Meter</h2>
+
+          <p className="mt-2 text-cyan-400">
+
+            {Math.min(100, cognitiveLoad)}%
+
           </p>
+
         </div>
 
-        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white">
+        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6">
+
+          <h2 className="font-bold">
+
             Focus Score
-          </h3>
 
-          <p className="mt-2 text-sm text-slate-400">
-            User focus metrics will appear here.
+          </h2>
+
+          <p className="mt-2 text-green-400">
+
+            {100 - Math.min(100, cognitiveLoad)}%
+
           </p>
+
         </div>
 
-        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6 shadow-lg">
-          <h3 className="text-lg font-semibold text-white">
-            Productivity Index
-          </h3>
+        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6">
 
-          <p className="mt-2 text-sm text-slate-400">
-            Productivity insights will appear here.
+          <h2 className="font-bold">
+
+            Productivity
+
+          </h2>
+
+          <p className="mt-2 text-yellow-400">
+
+            {telemetry.keyPresses}
+
           </p>
+
         </div>
 
       </section>
 
-      {/* Main Dashboard */}
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-8">
 
-        {/* Left Side */}
         <div className="xl:col-span-2 space-y-6">
 
           <TelemetryTracker />
@@ -80,7 +108,9 @@ export default function Dashboard() {
           <CodeEditor />
 
           <ErrorBoundary>
+
             <DynamicRenderer />
+
           </ErrorBoundary>
 
           <AdaptiveDashboard cognitiveLoad={cognitiveLoad} />
@@ -89,7 +119,6 @@ export default function Dashboard() {
 
         </div>
 
-        {/* Right Side */}
         <div className="space-y-6">
 
           <ResponseCard />
@@ -98,9 +127,10 @@ export default function Dashboard() {
 
       </section>
 
-      {/* Footer */}
       <Footer />
 
     </div>
+
   );
+
 }

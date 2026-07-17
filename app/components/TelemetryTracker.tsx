@@ -3,10 +3,17 @@
 import { useEffect } from "react";
 import TelemetryCard from "./TelemetryCard";
 import { useTelemetryContext } from "../context/TelemetryContext";
+import { getSocket } from "../services/socket";
 
 export default function TelemetryTracker() {
   const { telemetry, setTelemetry } = useTelemetryContext();
 
+  // Initialize socket once
+  useEffect(() => {
+    getSocket();
+  }, []);
+
+  // Mouse Movement
   useEffect(() => {
     let lastX = 0;
     let lastY = 0;
@@ -48,6 +55,7 @@ export default function TelemetryTracker() {
       );
   }, [setTelemetry]);
 
+  // Click Tracking
   useEffect(() => {
     let lastClick = 0;
 
@@ -75,6 +83,7 @@ export default function TelemetryTracker() {
       );
   }, [setTelemetry]);
 
+  // Scroll Tracking
   useEffect(() => {
     const handleScroll = () => {
       setTelemetry((prev) => ({
@@ -92,6 +101,7 @@ export default function TelemetryTracker() {
       );
   }, [setTelemetry]);
 
+  // Keyboard Tracking
   useEffect(() => {
     const handleKeyDown = () => {
       setTelemetry((prev) => ({
@@ -112,6 +122,7 @@ export default function TelemetryTracker() {
       );
   }, [setTelemetry]);
 
+  // Hesitation Timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTelemetry((prev) => ({
@@ -122,6 +133,21 @@ export default function TelemetryTracker() {
 
     return () => clearInterval(timer);
   }, [setTelemetry]);
+
+  // Send telemetry to backend every second
+  useEffect(() => {
+    const socket = getSocket();
+
+    const interval = setInterval(() => {
+      socket.emit("telemetry", {
+        hesitation: telemetry.hesitationTime,
+        clicks: telemetry.clicks,
+        prompt: "Adaptive Dashboard",
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [telemetry]);
 
   return (
     <TelemetryCard

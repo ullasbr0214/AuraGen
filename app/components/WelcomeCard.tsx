@@ -44,10 +44,12 @@ export default function WelcomeCard() {
             Adaptive Workspace powered by Cognitive Intelligence
           </p>
 
-          <p className="mt-1 text-slate-500">
-            {today}
-          </p>
-
+          <p
+  className="mt-1 text-slate-500"
+  suppressHydrationWarning
+>
+  {today}
+</p>
         </div>
 
         <div className="rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-4">

@@ -1,42 +1,35 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getSocket } from "../services/socket";
 
-export default function useWebSocket(url: string) {
+export default function useWebSocket() {
   const [connected, setConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState("");
 
   useEffect(() => {
-    let socket: WebSocket;
+    const socket = getSocket();
 
-    try {
-      socket = new WebSocket(url);
+    socket.on("connect", () => {
+      console.log("✅ Socket Connected");
+      setConnected(true);
+    });
 
-      socket.onopen = () => {
-        console.log("✅ Connected");
-        setConnected(true);
-      };
+    socket.on("disconnect", () => {
+      console.log("❌ Socket Disconnected");
+      setConnected(false);
+    });
 
-      socket.onmessage = (event) => {
-        setLastMessage(event.data);
-      };
-
-      socket.onclose = () => {
-        console.log("❌ Disconnected");
-        setConnected(false);
-      };
-
-      socket.onerror = () => {
-        console.log("⚠ WebSocket Error");
-      };
-    } catch (err) {
-      console.log(err);
-    }
+    socket.on("response", (data) => {
+      setLastMessage(JSON.stringify(data));
+    });
 
     return () => {
-      socket?.close();
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("response");
     };
-  }, [url]);
+  }, []);
 
   return {
     connected,

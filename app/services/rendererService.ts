@@ -6,6 +6,14 @@ export type GeneratedComponent = {
   id: number;
   title: string;
   description: string;
+  jsx?: string;
+};
+
+type ComponentResult = {
+  success: boolean;
+  jsx?: string;
+  explanation?: string;
+  error?: string;
 };
 
 export function subscribeToGeneratedComponents(
@@ -15,19 +23,20 @@ export function subscribeToGeneratedComponents(
 
   let counter = 0;
 
-  function handleComponent(result: {
-    success: boolean;
-    jsx?: string;
-    error?: string;
-  }) {
+  function handleComponent(result: ComponentResult) {
+    console.log("📦 Renderer received:", result);
+
     if (!result.success) return;
 
     counter++;
 
     onNewComponent({
       id: counter,
-      title: `Generated Component #${counter}`,
-      description: "AI-generated React component received successfully.",
+      title: `Generated Component ${counter}`,
+      description:
+        result.explanation ||
+        "AI successfully generated a React component.",
+      jsx: result.jsx || "",
     });
   }
 
