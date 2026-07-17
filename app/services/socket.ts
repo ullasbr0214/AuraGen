@@ -4,35 +4,27 @@ import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-const SOCKET_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000";
+const SOCKET_URL = "http://192.168.29.97:5000";
+// or "http://localhost:5000" if backend is running on the same PC
 
 export function getSocket(): Socket {
   if (!socket) {
     socket = io(SOCKET_URL, {
-      transports: ["websocket", "polling"],
+      transports: ["websocket"],
       autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-      timeout: 10000,
     });
 
     socket.on("connect", () => {
-      console.log("✅ AuraGen Connected");
-      console.log("Socket ID:", socket?.id);
-    });
-
-    socket.on("disconnect", (reason) => {
-      console.log("❌ Disconnected:", reason);
+      console.log("✅ Connected");
+      console.log(socket?.id);
     });
 
     socket.on("connect_error", (err) => {
-      console.error("❌ Connection Error:", err.message);
+      console.log("❌", err.message);
     });
 
-    socket.on("error", (err) => {
-      console.error("❌ Socket Error:", err);
+    socket.on("component", (data) => {
+      console.log("📦 Component received:", data);
     });
   }
 

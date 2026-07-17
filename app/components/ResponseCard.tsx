@@ -2,40 +2,15 @@
 
 import {
   BrainCircuit,
-  Activity,
   CheckCircle2,
   Sparkles,
-  Cpu,
 } from "lucide-react";
 
-const events = [
-  {
-    time: "09:41",
-    title: "Telemetry Stream",
-    message: "Real-time user interaction monitoring started.",
-    icon: <Activity className="text-cyan-400" size={18} />,
-  },
-  {
-    time: "09:42",
-    title: "Cognitive Analysis",
-    message: "Cognitive load is within optimal range.",
-    icon: <BrainCircuit className="text-violet-400" size={18} />,
-  },
-  {
-    time: "09:43",
-    title: "AI Recommendation",
-    message: "Current workspace is optimized for productivity.",
-    icon: <Sparkles className="text-yellow-400" size={18} />,
-  },
-  {
-    time: "09:44",
-    title: "Self-Healing Engine",
-    message: "No layout regeneration required.",
-    icon: <Cpu className="text-blue-400" size={18} />,
-  },
-];
+import { useAura } from "../context/AuraContext";
 
 export default function ResponseCard() {
+  const { response } = useAura();
+
   return (
     <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">
 
@@ -43,15 +18,13 @@ export default function ResponseCard() {
       <div className="flex items-center justify-between">
 
         <div>
-
           <h2 className="text-2xl font-bold text-white">
-            AI Event Feed
+            Aura AI Response
           </h2>
 
           <p className="mt-1 text-sm text-slate-400">
-            Live cognitive intelligence updates
+            Live response from the AI pipeline
           </p>
-
         </div>
 
         <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-2">
@@ -62,66 +35,55 @@ export default function ResponseCard() {
           />
 
           <span className="text-sm font-semibold text-green-300">
-            Active
+            Connected
           </span>
 
         </div>
 
       </div>
 
-      {/* Timeline */}
+      {/* AI Response */}
 
-      <div className="mt-8 space-y-5">
+      <div className="mt-8 rounded-2xl border border-cyan-500/20 bg-slate-800/60 p-6">
 
-        {events.map((event, index) => (
+        <div className="flex items-center gap-3">
 
-          <div
-            key={index}
-            className="flex gap-4 rounded-2xl border border-slate-700 bg-slate-800/60 p-4 transition hover:border-cyan-500/20"
-          >
+          <BrainCircuit className="text-cyan-400" />
 
-            <div className="mt-1">
-              {event.icon}
-            </div>
+          <h3 className="text-lg font-semibold text-white">
+            AI Response
+          </h3>
 
-            <div className="flex-1">
+        </div>
 
-              <div className="flex items-center justify-between">
+        <p className="mt-5 whitespace-pre-wrap leading-7 text-slate-300">
 
-                <h3 className="font-semibold text-white">
-                  {event.title}
-                </h3>
+          {response || "Waiting for AI response..."}
 
-                <span className="text-xs text-slate-500">
-                  {event.time}
-                </span>
-
-              </div>
-
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                {event.message}
-              </p>
-
-            </div>
-
-          </div>
-
-        ))}
+        </p>
 
       </div>
 
-      {/* AI Summary */}
+      {/* Status */}
 
-      <div className="mt-8 rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-5">
+      <div className="mt-6 rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-5">
 
-        <p className="text-sm uppercase tracking-widest text-cyan-300">
-          AI Summary
-        </p>
+        <div className="flex items-center gap-2">
 
-        <p className="mt-2 text-slate-300">
-          User interaction patterns are stable.
-          No significant cognitive overload detected.
-          Current interface remains optimized.
+          <Sparkles className="text-cyan-400" />
+
+          <p className="font-semibold text-cyan-300">
+            Aura AI Status
+          </p>
+
+        </div>
+
+        <p className="mt-3 text-slate-300">
+
+          {response
+            ? "The backend responded successfully."
+            : "Waiting for the backend to generate a component."}
+
         </p>
 
       </div>
