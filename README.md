@@ -1,230 +1,209 @@
 # 🚀 AuraGen Frontend
 
-> Self-Healing Generative UI via Cognitive Load
+AuraGen is an AI-powered adaptive frontend that dynamically generates and adapts user interfaces based on user interaction telemetry and cognitive load analysis.
 
-AuraGen is an AI-powered frontend that dynamically adapts its user interface based on a user's cognitive load. Instead of displaying a static dashboard, the interface is designed to evolve according to real-time telemetry and AI-driven recommendations.
-
-This repository contains the **frontend implementation** developed using **Next.js, React, TypeScript, and Tailwind CSS**.
+This frontend communicates with the AuraGen Backend using Socket.IO and displays AI-generated React UI components in real time.
 
 ---
 
-## 📌 Project Overview
+# ✨ Features
 
-Traditional dashboards remain static even when users experience confusion or cognitive overload.
-
-AuraGen addresses this challenge by providing an adaptive interface that can respond to user interaction patterns such as:
-
-- Mouse movement
-- Click behavior
-- Hesitation time
-- Scroll activity
-- Keyboard activity
-
-These telemetry signals are used to estimate cognitive load and prepare the UI for dynamic adaptation.
-
----
-
-# ✨ Frontend Features
-
-## 🧠 AI Dashboard
-
-- Modern AI workspace
-- Adaptive dashboard layout
-- Professional dark theme
-- Responsive design
+- 🤖 AI-powered UI generation
+- 📡 Real-time Socket.IO communication
+- 🧠 Cognitive Load Monitoring
+- 📊 Telemetry Tracking
+- 🎯 Adaptive Dashboard
+- 🔄 Self-Healing UI
+- ⚡ Dynamic Component Rendering
+- 📝 AI Code Workspace
+- 📈 Live Response Feed
+- 🎨 Modern Responsive UI
+- 🌙 Glassmorphism Design
 
 ---
 
-## 📊 Real-Time Telemetry
+# 🏗️ Project Structure
 
-Tracks:
-
-- Mouse Position
-- Mouse Velocity
-- Click Count
-- Rapid Click Detection
-- Scroll Events
-- Keyboard Activity
-- Hesitation Time
-
----
-
-## 🧠 Cognitive Intelligence
-
-Displays:
-
-- Cognitive Load
-- Focus Score
-- Stress Level
-- Productivity Score
-- AI Recommendations
+```
+AuraGen/
+│
+├── app/
+│   ├── components/
+│   ├── context/
+│   ├── hooks/
+│   ├── services/
+│   ├── page.tsx
+│   └── layout.tsx
+│
+├── public/
+├── README.md
+├── package.json
+└── tsconfig.json
+```
 
 ---
 
-## 🤖 Aura AI Copilot
-
-Users can:
-
-- Enter prompts
-- Request UI generation
-- View AI generation workflow
-- Prepare requests for backend AI pipeline
-
----
-
-## 💻 AI Code Workspace
-
-Displays generated React code.
-
-Features:
-
-- React TSX Preview
-- Copy Code
-- Pipeline Status
-- Renderer Status
-
----
-
-## ⚡ Dynamic Renderer
-
-Prepared for backend integration.
-
-Responsibilities:
-
-- Receive AI-generated UI
-- Render components dynamically
-- Support future self-healing layouts
-
----
-
-## 🔄 AI Loading Experience
-
-Interactive loading overlay showing:
-
-- Prompt Analysis
-- React Component Generation
-- Dynamic Rendering
-- UI Optimization
-
----
-
-# 🛠 Tech Stack
+# ⚙️ Tech Stack
 
 - Next.js
 - React
 - TypeScript
 - Tailwind CSS
-- Lucide React Icons
+- Socket.IO Client
+- Lucide React
 - Context API
-- Custom React Hooks
 
 ---
 
-# 📂 Project Structure
+# 🚀 Installation
 
-```
-app/
-│
-├── components/
-│   ├── Navbar.tsx
-│   ├── Sidebar.tsx
-│   ├── Dashboard.tsx
-│   ├── WelcomeCard.tsx
-│   ├── TelemetryTracker.tsx
-│   ├── TelemetryCard.tsx
-│   ├── CognitiveGauge.tsx
-│   ├── ResponseCard.tsx
-│   ├── AskAura.tsx
-│   ├── CodeEditor.tsx
-│   ├── DynamicRenderer.tsx
-│   ├── LoadingOverlay.tsx
-│   ├── AdaptiveDashboard.tsx
-│   ├── SelfHealingEngine.tsx
-│   └── MorphTransition.tsx
-│
-├── context/
-├── hooks/
-├── services/
-│
-├── layout.tsx
-└── page.tsx
+Clone the repository
+
+```bash
+git clone https://github.com/ullasbr0214/AuraGen.git
 ```
 
----
+Move into the project
 
-# 🚧 Current Development Status
+```bash
+cd AuraGen
+```
 
-### ✅ Completed
+Install dependencies
 
-- Responsive Dashboard
-- Navigation System
-- AI Command Center
-- Telemetry Tracking
-- Cognitive Dashboard
-- AI Copilot
-- Code Workspace
-- Dynamic Renderer (Mock Integration)
-- Loading Overlay
+```bash
+npm install
+```
 
-### 🚀 In Progress
+Run the development server
 
-- Adaptive Dashboard Layout
-- Self-Healing Engine
-- Morph Transition Animation
-- Backend Integration
-- AI Pipeline Integration
-- Dynamic Component Injection
+```bash
+npm run dev
+```
 
----
+Open
 
-# 🔗 Integration
-
-The frontend is designed to integrate with:
-
-- Backend API
-- WebSocket Server
-- AI Pipeline
-- Dynamic React Component Generator
+```
+http://localhost:3000
+```
 
 ---
 
-# 🎯 Learning Journey
+# 🔌 Backend Connection
 
-This project was developed as part of an AI internship to explore:
+The frontend communicates with the AuraGen Backend using Socket.IO.
 
-- Advanced React architecture
-- Next.js application development
-- AI-assisted frontend engineering
-- Dynamic UI rendering
-- Real-time telemetry tracking
-- Adaptive user interface design
+Default Backend URL
 
-AI tools were used to accelerate development, explore implementation ideas, and improve code quality. All generated code was reviewed, integrated, tested, and understood as part of the learning process.
+```
+http://localhost:5000
+```
 
----
+Update the backend URL inside:
 
-# 📈 Future Enhancements
+```
+app/services/socket.ts
+```
 
-- Live WebSocket Updates
-- Dynamic React Injection
-- Adaptive Dashboard Modes
-- Cognitive Heatmaps
-- AI Layout Optimization
-- Self-Healing UI Engine
-- Animated Layout Morphing
+if required.
 
 ---
 
-# 👨‍💻 Developer
+# 🧠 Workflow
+
+```
+User Prompt
+      │
+      ▼
+Generate UI
+      │
+      ▼
+Socket.IO
+      │
+      ▼
+AuraGen Backend
+      │
+      ▼
+AI Pipeline
+      │
+      ▼
+Generated React Component
+      │
+      ▼
+Frontend Rendering
+```
+
+---
+
+# 📦 Main Components
+
+- Dashboard
+- Navbar
+- WelcomeCard
+- AskAura
+- TelemetryTracker
+- CognitiveGauge
+- CodeEditor
+- DynamicRenderer
+- ResponseCard
+- SelfHealingEngine
+
+---
+
+# 👥 Team
+
+### Frontend Developer
 
 **Ullas B R**
 
-Frontend Developer
-
-B.E. Artificial Intelligence & Machine Learning
+GitHub:
+https://github.com/ullasbr0214
 
 ---
 
-## ⭐ Project Vision 
+### Backend Developer
 
-> Build intelligent user interfaces that understand user behavior, reduce cognitive load, and adapt in real time to create a smarter and more accessible digital experience.
+**Goutham**
+
+GitHub:
+https://github.com/Goutham2306
+
+---
+
+### AI Pipeline Developer
+
+**Ayush Tiwari**
+
+GitHub:
+https://github.com/Ayushtiwari19
+
+---
+
+# 📌 Project Status
+
+✅ Frontend Completed
+
+- Adaptive Dashboard
+- Telemetry Tracking
+- Socket.IO Integration
+- Dynamic Renderer
+- AI Code Workspace
+- AI Event Feed
+- Cognitive Load Monitoring
+- Self-Healing UI
+
+---
+
+# Future Improvements
+
+- Live JSX Rendering
+- User Authentication
+- AI Session History
+- Theme Customization
+- Multi-Agent Support
+
+---
+
+# License
+
+This project is developed for educational and research purposes.
