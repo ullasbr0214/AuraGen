@@ -42,6 +42,9 @@ export default function AskAura() {
     setLoading(true);
 
     try {
+      console.log("🚀 Generate UI clicked");
+console.log("Prompt:", prompt);
+console.log("Telemetry:", telemetry);
       const result = await generateAuraCode(prompt, {
         hesitation: telemetry.hesitationTime,
         clicks: telemetry.clicks,
