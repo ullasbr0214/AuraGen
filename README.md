@@ -1,52 +1,43 @@
 # 🚀 AuraGen Frontend
 
-AuraGen is an AI-powered adaptive frontend that dynamically generates and adapts user interfaces based on user interaction telemetry and cognitive load analysis.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-15-black?logo=next.js" />
+  <img src="https://img.shields.io/badge/React-19-blue?logo=react" />
+  <img src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript" />
+  <img src="https://img.shields.io/badge/TailwindCSS-4-38BDF8?logo=tailwindcss" />
+  <img src="https://img.shields.io/badge/Socket.IO-Client-black?logo=socketdotio" />
+  <img src="https://img.shields.io/badge/Status-Frontend%20Complete-success" />
+</p>
 
-This frontend communicates with the AuraGen Backend using Socket.IO and displays AI-generated React UI components in real time.
+## 📌 Project Overview
+
+AuraGen is an AI-powered **Self-Healing Generative UI** platform that dynamically adapts user interfaces based on real-time cognitive load and user interaction telemetry.
+
+This repository contains the **Frontend** of the AuraGen system, developed using **Next.js**, **React**, **TypeScript**, and **Tailwind CSS**.
+
+The frontend captures telemetry data, communicates with the backend using Socket.IO, and visualizes AI-generated UI components in real time.
 
 ---
 
 # ✨ Features
 
-- 🤖 AI-powered UI generation
-- 📡 Real-time Socket.IO communication
-- 🧠 Cognitive Load Monitoring
-- 📊 Telemetry Tracking
-- 🎯 Adaptive Dashboard
-- 🔄 Self-Healing UI
-- ⚡ Dynamic Component Rendering
-- 📝 AI Code Workspace
-- 📈 Live Response Feed
-- 🎨 Modern Responsive UI
-- 🌙 Glassmorphism Design
+- 🤖 AI-powered UI Generation
+- 📊 Real-time Telemetry Tracking
+- 🧠 Cognitive Load Visualization
+- ⚡ Dynamic React Component Rendering
+- 🔄 Self-Healing Dashboard
+- 📡 Socket.IO Backend Communication
+- 📈 Adaptive Dashboard
+- 🎯 Productivity & Focus Monitoring
+- 📱 Responsive UI
+- 🌙 Modern Glassmorphism Design
 
 ---
 
-# 🏗️ Project Structure
+# 🛠 Tech Stack
 
-```
-AuraGen/
-│
-├── app/
-│   ├── components/
-│   ├── context/
-│   ├── hooks/
-│   ├── services/
-│   ├── page.tsx
-│   └── layout.tsx
-│
-├── public/
-├── README.md
-├── package.json
-└── tsconfig.json
-```
-
----
-
-# ⚙️ Tech Stack
-
-- Next.js
-- React
+- Next.js 15
+- React 19
 - TypeScript
 - Tailwind CSS
 - Socket.IO Client
@@ -55,7 +46,121 @@ AuraGen/
 
 ---
 
-# 🚀 Installation
+# 📂 Project Structure
+
+```
+AuraGen-Frontend
+│
+├── app
+│   ├── components
+│   │   ├── AdaptiveDashboard.tsx
+│   │   ├── AskAura.tsx
+│   │   ├── CodeEditor.tsx
+│   │   ├── CognitiveGauge.tsx
+│   │   ├── Dashboard.tsx
+│   │   ├── DynamicRenderer.tsx
+│   │   ├── ErrorBoundary.tsx
+│   │   ├── Footer.tsx
+│   │   ├── LoadingOverlay.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── ResponseCard.tsx
+│   │   ├── SelfHealingEngine.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── TelemetryCard.tsx
+│   │   ├── TelemetryTracker.tsx
+│   │   └── WelcomeCard.tsx
+│   │
+│   ├── context
+│   │   ├── AuraContext.tsx
+│   │   └── TelemetryContext.tsx
+│   │
+│   ├── hooks
+│   │   └── useTelemetry.ts
+│   │
+│   ├── services
+│   │   ├── aiService.ts
+│   │   ├── rendererService.ts
+│   │   └── socket.ts
+│   │
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+│
+├── public
+├── package.json
+└── README.md
+```
+
+---
+
+# 🧠 System Architecture
+
+```
+Frontend (Next.js)
+        │
+        │ Socket.IO
+        ▼
+Backend (Express.js)
+        │
+        ▼
+AI Pipeline
+(Google Gemini + LangChain)
+        │
+        ▼
+Generated React Components
+        │
+        ▼
+Frontend Renderer
+```
+
+---
+
+# 📊 Frontend Modules
+
+### Dashboard
+
+- AI Command Center
+- Live Metrics
+- Adaptive Dashboard
+
+### Telemetry Engine
+
+- Mouse Tracking
+- Click Tracking
+- Rapid Click Detection
+- Keyboard Tracking
+- Scroll Tracking
+- Hesitation Detection
+
+### AI Copilot
+
+- Prompt Input
+- AI Request
+- Backend Communication
+
+### Code Workspace
+
+- Live Generated React Code
+- Copy Code
+- Download Code
+- Clear Workspace
+
+### Dynamic Renderer
+
+- Live JSX Preview
+- Generated Components
+- AI Rendering Pipeline
+
+### Cognitive Engine
+
+- Cognitive Load
+- Stress Level
+- Focus Score
+- Productivity Score
+
+---
+
+# ⚙ Installation
 
 Clone the repository
 
@@ -91,119 +196,88 @@ http://localhost:3000
 
 # 🔌 Backend Connection
 
-The frontend communicates with the AuraGen Backend using Socket.IO.
+Configure the backend URL using an environment variable.
 
-Default Backend URL
+Create a `.env.local` file:
 
-```
-http://localhost:5000
-```
-
-Update the backend URL inside:
-
-```
-app/services/socket.ts
+```env
+NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
 ```
 
-if required.
-
----
-
-# 🧠 Workflow
-
-```
-User Prompt
-      │
-      ▼
-Generate UI
-      │
-      ▼
-Socket.IO
-      │
-      ▼
-AuraGen Backend
-      │
-      ▼
-AI Pipeline
-      │
-      ▼
-Generated React Component
-      │
-      ▼
-Frontend Rendering
-```
-
----
-
-# 📦 Main Components
-
-- Dashboard
-- Navbar
-- WelcomeCard
-- AskAura
-- TelemetryTracker
-- CognitiveGauge
-- CodeEditor
-- DynamicRenderer
-- ResponseCard
-- SelfHealingEngine
+Or replace it with your deployed backend URL.
 
 ---
 
 # 👥 Team
 
-### Frontend Developer
+### Ullas B R
+
+**Frontend Developer**
+
+Responsibilities
+
+- UI Development
+- Dashboard Design
+- Telemetry Tracking
+- Socket.IO Client Integration
+- Dynamic Component Rendering
+
+---
+
+### Goutham
+
+**Backend Developer**
+
+Responsibilities
+
+- Express.js Backend
+- Socket.IO Server
+- API Development
+- Frontend Integration
+
+---
+
+### Ayush
+
+**AI Pipeline Developer**
+
+Responsibilities
+
+- Gemini AI Integration
+- LangChain Pipeline
+- React Component Generation
+- AI Prompt Engineering
+
+---
+
+# 🚀 Future Enhancements
+
+- Live AI Component Rendering
+- Multi-User Collaboration
+- Voice Commands
+- Gesture-Based Navigation
+- AI Theme Adaptation
+- Real-Time Analytics
+- Performance Optimization
+
+---
+
+# 📄 License
+
+This project is developed for educational and research purposes.
+
+---
+
+# 👨‍💻 Author
 
 **Ullas B R**
 
-GitHub:
-https://github.com/ullasbr0214
+Frontend Developer | AI & Machine Learning Engineer
+
+GitHub: https://github.com/ullasbr0214
+
+LinkedIn: https://www.linkedin.com/in/ullas-b-r-ai/
 
 ---
 
-### Backend Developer
-
-**Goutham**
-
-GitHub:
-https://github.com/Goutham2306
-
----
-
-### AI Pipeline Developer
-
-**Ayush Tiwari**
-
-GitHub:
-https://github.com/Ayushtiwari19
-
----
-
-# 📌 Project Status
-
-✅ Frontend Completed
-
-- Adaptive Dashboard
-- Telemetry Tracking
-- Socket.IO Integration
-- Dynamic Renderer
-- AI Code Workspace
-- AI Event Feed
-- Cognitive Load Monitoring
-- Self-Healing UI
-
----
-
-# Future Improvements
-
-- Live JSX Rendering
-- User Authentication
-- AI Session History
-- Theme Customization
-- Multi-Agent Support
-
----
-
-# License
-
-This project is developed for educational and research purposes.
+⭐ If you like this project, consider giving it a star.
