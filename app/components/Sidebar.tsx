@@ -62,7 +62,7 @@ export default function Sidebar() {
         </p>
 
         <h3 className="mt-2 text-xl font-bold text-white">
-          Connected
+          AI Online
         </h3>
 
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-700">
@@ -70,10 +70,26 @@ export default function Sidebar() {
         </div>
 
         <p className="mt-2 text-sm text-slate-300">
-          Neural Engine Running
+          Gemini AI Connected
         </p>
 
       </div>
+
+      <div className="mx-5 mt-4 rounded-2xl border border-green-500/20 bg-green-500/10 p-4">
+
+  <p className="text-xs uppercase tracking-widest text-green-300">
+    Backend
+  </p>
+
+  <h3 className="mt-2 text-xl font-bold text-white">
+    Connected
+  </h3>
+
+  <p className="mt-2 text-sm text-green-300">
+    Socket.IO Active
+  </p>
+
+</div>
 
       {/* Navigation */}
       <nav className="flex-1 px-4">
@@ -83,9 +99,14 @@ export default function Sidebar() {
 
           return (
             <button
-              key={item.title}
-              className="group mb-3 flex w-full items-center gap-4 rounded-xl border border-transparent px-4 py-3 text-left transition-all duration-300 hover:border-cyan-500/20 hover:bg-cyan-500/10"
-            >
+  key={item.title}
+  className={`group mb-3 flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition-all duration-300
+  ${
+    item.title === "Dashboard"
+      ? "border border-cyan-500/30 bg-cyan-500/10"
+      : "border border-transparent hover:border-cyan-500/20 hover:bg-cyan-500/10"
+  }`}
+>
               <Icon
                 size={22}
                 className="text-cyan-400 transition group-hover:scale-110"
@@ -123,6 +144,17 @@ export default function Sidebar() {
               </p>
 
             </div>
+            <div className="mt-5 text-center">
+
+  <p className="text-xs text-slate-500">
+    AuraGen v1.0.0
+  </p>
+
+  <p className="mt-1 text-xs text-cyan-400">
+    Self-Healing AI Workspace
+  </p>
+
+</div>
 
           </div>
 

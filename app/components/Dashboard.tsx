@@ -23,7 +23,20 @@ export default function Dashboard() {
   const { telemetry } = useTelemetryContext();
 
   useEffect(() => {
-  getSocket();
+  const socket = getSocket();
+
+  socket.on("connect", () => {
+    console.log("✅ Aura Backend Connected");
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Backend Disconnected");
+  });
+
+  return () => {
+    socket.off("connect");
+    socket.off("disconnect");
+  };
 }, []);
   const cognitiveLoad = Math.min(
     100,
@@ -37,15 +50,29 @@ export default function Dashboard() {
 
   return (
 
-    <div className="min-h-screen bg-transparent text-white p-8">
+  <div className="min-h-screen bg-transparent p-8 text-white">
 
-      <Navbar />
+    <Navbar />
 
-      <section className="mt-8">
+    {/* Dashboard Header */}
 
-        <WelcomeCard />
+    <div className="mt-6 mb-8 rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 p-6">
 
-      </section>
+      <h1 className="text-4xl font-bold text-white">
+        AuraGen Dashboard
+      </h1>
+
+      <p className="mt-2 text-slate-300">
+        Self-Healing Generative UI using Cognitive Load Intelligence
+      </p>
+
+    </div>
+
+    <section>
+
+      <WelcomeCard />
+
+    </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8">
 
@@ -55,11 +82,13 @@ export default function Dashboard() {
 
           <h2 className="font-bold">Stress Meter</h2>
 
-          <p className="mt-2 text-cyan-400">
+          <p className="mt-2 text-3xl font-bold text-cyan-400">
+  {Math.min(100, cognitiveLoad)}%
+</p>
 
-            {Math.min(100, cognitiveLoad)}%
-
-          </p>
+<p className="mt-2 text-sm text-slate-400">
+  AI detected stress level
+</p>
 
         </div>
 
@@ -71,7 +100,7 @@ export default function Dashboard() {
 
           </h2>
 
-          <p className="mt-2 text-green-400">
+          <p className="mt-2 text-3xl font-bold text-green-400">
 
             {100 - Math.min(100, cognitiveLoad)}%
 
@@ -89,7 +118,7 @@ export default function Dashboard() {
 
           <p className="mt-2 text-yellow-400">
 
-            {telemetry.keyPresses}
+            {Math.min(100, telemetry.keyPresses)}%
 
           </p>
 
@@ -127,7 +156,19 @@ export default function Dashboard() {
 
       </section>
 
-      <Footer />
+      {/* AI Status */}
+
+<div className="mt-6 flex justify-end">
+
+  <div className="rounded-full border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-400">
+
+    ● AI Monitoring Active
+
+  </div>
+
+</div>
+
+<Footer />
 
     </div>
 
