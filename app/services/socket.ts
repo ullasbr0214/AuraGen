@@ -7,7 +7,7 @@ let socket: Socket | null = null;
 // Change this if your backend runs on another device
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL ||
-  "https://cover-patriot-overhand.ngrok-free.dev";
+  "https://cover-patriot-overhand.ngrok-free.dev/";
 
 export function getSocket(): Socket {
   if (!socket) {
