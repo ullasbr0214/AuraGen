@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrainCircuit,
   Activity,
@@ -26,9 +26,21 @@ export default function ResponseCard() {
       title: "Telemetry Ready",
       message: "AuraGen is waiting for telemetry events.",
       status: "info",
-      time: new Date().toLocaleTimeString(),
+      time: "--:--",
     },
   ]);
+
+  useEffect(() => {
+    setEvents((prev) =>
+      prev.map((event) => ({
+        ...event,
+        time: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      }))
+    );
+  }, []);
 
   const clearEvents = () => {
     setEvents([]);
@@ -84,14 +96,12 @@ export default function ResponseCard() {
       </div>
 
       {/* Counter */}
-
       <div className="mt-5 text-sm text-cyan-300">
         Total Events :{" "}
         <span className="font-bold">{events.length}</span>
       </div>
 
       {/* Timeline */}
-
       <div className="mt-8 space-y-5">
 
         {events.length === 0 ? (
@@ -161,14 +171,13 @@ export default function ResponseCard() {
       </div>
 
       {/* AI Summary */}
-
       <div className="mt-8 rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-5">
 
         <p className="text-sm uppercase tracking-widest text-cyan-300">
           AI Summary
         </p>
 
-        <p className="mt-3 text-slate-300 leading-7">
+        <p className="mt-3 leading-7 text-slate-300">
           AuraGen monitors telemetry, analyzes user interactions,
           generates adaptive React components, and maintains an
           intelligent event timeline. Once backend integration is

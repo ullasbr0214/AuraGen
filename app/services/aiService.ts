@@ -6,14 +6,22 @@ type ComponentResult = {
   success: boolean;
   jsx?: string;
   explanation?: string;
+
+  cognitiveLoad?: number;
+  stressLevel?: string;
+  focusScore?: number;
+
   error?: string;
 };
 
 type AuraCodeResult = {
   response: string;
   code: string;
-};
 
+  cognitiveLoad: number;
+  stressLevel: string;
+  focusScore: number;
+};
 export function generateAuraCode(
   prompt: string,
   telemetry?: {
@@ -51,13 +59,17 @@ export function generateAuraCode(
       }
 
       resolve({
-        response:
-          result.explanation ||
-          "✅ Aura successfully generated the component.",
+  response:
+    result.explanation ||
+    "✅ Aura successfully generated the component.",
 
-        code: result.jsx || "",
-      });
-    }
+  code: result.jsx || "",
+
+  cognitiveLoad: result.cognitiveLoad ?? 0,
+  stressLevel: result.stressLevel ?? "Unknown",
+  focusScore: result.focusScore ?? 0,
+});
+}
 
     socket.on("component", handleComponent);
 

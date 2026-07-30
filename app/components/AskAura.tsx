@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useChat } from "../context/ChatContext";
 import {
   Sparkles,
   Send,
@@ -16,15 +17,29 @@ import LoadingOverlay from "./LoadingOverlay";
 
 export default function AskAura() {
   const {
-    prompt,
-    setPrompt,
-    setResponse,
-    setGeneratedCode,
-  } = useAura();
+  prompt,
+  setPrompt,
+  setResponse,
+  setGeneratedCode,
+  addGeneratedComponent,
 
+  aiStatus,
+  setAiStatus,
+
+  cognitiveLoad,
+  setCognitiveLoad,
+
+  stressLevel,
+  setStressLevel,
+
+  focusScore,
+  setFocusScore,
+} = useAura();
   const { telemetry } = useTelemetryContext();
 
   const [loading, setLoading] = useState(false);
+
+  const { addMessage } = useChat();
 
   const suggestions = [
     "Generate a responsive login page",
@@ -34,39 +49,57 @@ export default function AskAura() {
   ];
 
   const generateCode = async () => {
-    if (!prompt.trim()) {
-      setResponse("⚠ Please enter a prompt first.");
-      return;
-    }
+  if (!prompt.trim()) {
+    setResponse("⚠ Please enter a prompt first.");
+    return;
+  }
 
-    setLoading(true);
+  // Save the user's prompt
+  addMessage("user", prompt);
 
-    try {
-      console.log("🚀 Generate UI clicked");
-console.log("Prompt:", prompt);
-console.log("Telemetry:", telemetry);
-      const result = await generateAuraCode(prompt, {
-        hesitation: telemetry.hesitationTime,
-        clicks: telemetry.clicks,
-      });
+  setLoading(true);
+  setAiStatus("Sending Prompt...");
 
-      setResponse(result.response);
-      setGeneratedCode(result.code);
+  try {
+    const result = await generateAuraCode(prompt, {
+      hesitation: telemetry.hesitationTime,
+      clicks: telemetry.clicks,
+    });
+setAiStatus("Generating UI...");setAiStatus("Generating UI...");
+    setResponse(result.response);
+    setAiStatus("Rendering...");
+setGeneratedCode(result.code);
 
-      // Optional: clear prompt after successful generation
-      setPrompt("");
-    } catch (error) {
-      console.error(error);
+setCognitiveLoad(result.cognitiveLoad);
 
-      setResponse(
-        error instanceof Error
-          ? `❌ ${error.message}`
-          : "❌ Unable to connect to Aura Backend."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+setStressLevel(result.stressLevel);
+
+setFocusScore(result.focusScore);
+
+addGeneratedComponent({
+  id: Date.now(),
+  title: "AI Generated Component",
+  description: result.response,
+  jsx: result.code,
+});
+    // Save the AI response
+    addMessage("assistant", result.response);
+
+    setPrompt("");
+    setAiStatus("Completed");
+  } catch (error) {
+    console.error(error);
+
+    setResponse(
+      error instanceof Error
+        ? `❌ ${error.message}`
+        : "❌ Unable to connect to Aura Backend."
+    );
+    setAiStatus("Failed");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">

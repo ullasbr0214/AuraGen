@@ -14,27 +14,29 @@ import {
 import { getSocket } from "../services/socket";
 
 export default function Navbar() {
-  const [currentTime, setCurrentTime] = useState("");
+  const [currentTime, setCurrentTime] = useState("--:--:--");
+const [mounted, setMounted] = useState(false);
   const [socketStatus, setSocketStatus] = useState("Connecting...");
   const [aiStatus, setAiStatus] = useState("Initializing...");
 
-  useEffect(() => {
-    const updateClock = () => {
-      setCurrentTime(
-        new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })
-      );
-    };
+ useEffect(() => {
+  setMounted(true);
 
-    updateClock();
+  const updateClock = () => {
+    setCurrentTime(
+      new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  };
 
-    const timer = setInterval(updateClock, 1000);
+  updateClock();
 
-    return () => clearInterval(timer);
-  }, []);
+  const timer = setInterval(updateClock, 60000);
+
+  return () => clearInterval(timer);
+}, []);
 
   useEffect(() => {
     const socket = getSocket();
@@ -167,10 +169,9 @@ export default function Navbar() {
               <p className="text-xs text-slate-400">
                 Current Time
               </p>
-
-              <p className="font-semibold text-white">
-                {currentTime}
-              </p>
+<p className="font-semibold text-white">
+  {mounted ? currentTime : "--:--:--"}
+</p>
 
             </div>
 

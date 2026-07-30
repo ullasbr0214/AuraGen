@@ -3,6 +3,7 @@
 import useTelemetry from "../hooks/useTelemetry";
 import { Brain, Activity } from "lucide-react";
 
+
 export default function CognitiveGauge() {
   const {
     cognitiveLoad,

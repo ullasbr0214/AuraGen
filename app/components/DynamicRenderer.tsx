@@ -1,6 +1,6 @@
 "use client";
-
-import { useEffect, useState } from "react";
+// Remove this import completely
+import LivePreviewPanel from "./LivePreview";
 import {
   LayoutPanelTop,
   CheckCircle2,
@@ -11,32 +11,15 @@ import {
   Clock3,
 } from "lucide-react";
 
-import {
-  subscribeToGeneratedComponents,
-  GeneratedComponent,
-} from "../services/rendererService";
+import { useAura } from "../context/AuraContext";
 
 export default function DynamicRenderer() {
-  const [components, setComponents] = useState<GeneratedComponent[]>([]);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToGeneratedComponents((component) => {
-      setComponents((prev) => [
-        {
-          ...component,
-          timestamp: new Date().toLocaleTimeString(),
-        } as GeneratedComponent & { timestamp: string },
-        ...prev,
-      ]);
-    });
-
-    return unsubscribe;
-  }, []);
+  const { generatedComponents, setGeneratedComponents } = useAura();
+  const components = generatedComponents;
 
   const clearAll = () => {
-    setComponents([]);
-  };
-
+  setGeneratedComponents([]);
+};
   const copyCode = async (code: string) => {
   if (!code) {
     alert("No JSX code available.");
@@ -186,9 +169,13 @@ export default function DynamicRenderer() {
 
                   </div>
 
-                  <pre className="max-h-96 overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
-                    <code>{component.jsx}</code>
-                  </pre>
+                  <div className="grid gap-6 lg:grid-cols-2">
+  <pre className="max-h-96 overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
+    <code>{component.jsx}</code>
+  </pre>
+
+  <LivePreviewPanel code={component.jsx ?? ""} />
+</div>
 
                 </div>
 

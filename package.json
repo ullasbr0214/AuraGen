@@ -9,11 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@babel/standalone": "^8.0.4",
+    "@monaco-editor/react": "^4.7.0",
     "@swc/helpers": "^0.5.23",
     "lucide-react": "^1.27.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-live": "^4.1.8",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {

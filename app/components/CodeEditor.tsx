@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Code2,
   Copy,
@@ -12,11 +12,14 @@ import {
 } from "lucide-react";
 
 import { useAura } from "../context/AuraContext";
+import Editor from "@monaco-editor/react";
 
 export default function CodeEditor() {
   const { generatedCode, setGeneratedCode } = useAura();
 
   const [copied, setCopied] = useState(false);
+
+   const [saved, setSaved] = useState(true);
 
   const code =
     generatedCode ||
@@ -47,6 +50,7 @@ export default function GeneratedComponent() {
 
     const url = URL.createObjectURL(blob);
 
+
     const a = document.createElement("a");
 
     a.href = url;
@@ -59,6 +63,24 @@ export default function GeneratedComponent() {
   const clearCode = () => {
     setGeneratedCode("");
   };
+
+  useEffect(() => {
+  const handler = (e: KeyboardEvent) => {
+    if (e.ctrlKey && e.key.toLowerCase() === "s") {
+      e.preventDefault();
+
+      setSaved(true);
+
+      console.log("✅ Code Saved");
+    }
+  };
+
+  window.addEventListener("keydown", handler);
+
+  return () => {
+    window.removeEventListener("keydown", handler);
+  };
+}, []);
 
   return (
     <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl overflow-hidden">
@@ -86,9 +108,15 @@ export default function GeneratedComponent() {
 
         <div className="flex items-center gap-3">
 
-          <span className="rounded-full bg-green-500/10 px-3 py-1 text-sm font-semibold text-green-300">
-            ● Ready
-          </span>
+          <span
+  className={`rounded-full px-3 py-1 text-sm font-semibold ${
+    saved
+      ? "bg-green-500/10 text-green-300"
+      : "bg-yellow-500/10 text-yellow-300"
+  }`}
+>
+  {saved ? "● Saved" : "● Editing"}
+</span>
 
           <button
             onClick={downloadCode}
@@ -131,13 +159,36 @@ export default function GeneratedComponent() {
       </div>
 
       {/* Editor */}
-      <div className="max-h-[450px] overflow-auto bg-[#0B1120]">
-
-        <pre className="p-6 text-sm leading-7 text-green-300">
-          <code>{code}</code>
-        </pre>
-
-      </div>
+      {/* Editor */}
+<div className="h-[500px] bg-[#0B1120]">
+  <Editor
+    height="100%"
+    defaultLanguage="typescript"
+    language="typescript"
+    theme="vs-dark"
+    value={generatedCode || code}
+onChange={(value) => {
+  setGeneratedCode(value || "");
+  setSaved(false);
+}}
+    options={{
+      fontSize: 14,
+      minimap: {
+        enabled: true,
+      },
+      wordWrap: "on",
+      automaticLayout: true,
+      scrollBeyondLastLine: false,
+      formatOnPaste: true,
+      formatOnType: true,
+      tabSize: 2,
+      roundedSelection: true,
+      cursorBlinking: "smooth",
+      smoothScrolling: true,
+    }}
+  />
+</div>
+        
 
       {/* Footer */}
       <div className="flex items-center justify-between border-t border-slate-800 bg-slate-800/40 px-6 py-4">
@@ -190,6 +241,7 @@ function Status({
   title: string;
   value: string;
 }) {
+
   return (
     <div className="border-r border-slate-700 p-4 last:border-r-0">
 
