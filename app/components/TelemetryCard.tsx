@@ -27,8 +27,7 @@ function TelemetryItem(
   color: string
 ) {
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition hover:border-cyan-500/30 hover:bg-slate-800">
-
+  <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:bg-slate-800 hover:shadow-lg hover:shadow-cyan-500/10">
       <div className="flex items-center gap-3">
 
         <div className={`rounded-xl p-3 ${color}`}>
@@ -94,10 +93,51 @@ export default function TelemetryCard({
 
       </div>
 
-      {/* Grid */}
+      {/* Quick Summary */}
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+<div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
 
+  <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+    <p className="text-xs uppercase tracking-wide text-cyan-300">
+      Activity
+    </p>
+    <p className="mt-2 text-2xl font-bold text-white">
+      {clicks + keyPresses}
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-blue-500/20 bg-blue-500/10 p-4">
+    <p className="text-xs uppercase tracking-wide text-blue-300">
+      Velocity
+    </p>
+    <p className="mt-2 text-2xl font-bold text-white">
+      {velocity}
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-green-500/20 bg-green-500/10 p-4">
+    <p className="text-xs uppercase tracking-wide text-green-300">
+      Scrolls
+    </p>
+    <p className="mt-2 text-2xl font-bold text-white">
+      {scrollCount}
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-violet-500/20 bg-violet-500/10 p-4">
+    <p className="text-xs uppercase tracking-wide text-violet-300">
+      Session
+    </p>
+    <p className="mt-2 text-2xl font-bold text-white">
+      {hesitationTime}s
+    </p>
+  </div>
+
+</div>
+
+{/* Grid */}
+
+<div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {TelemetryItem(
           "Mouse Position",
           `${mouseX}, ${mouseY}`,

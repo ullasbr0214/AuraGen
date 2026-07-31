@@ -153,12 +153,13 @@ useEffect(() => {
           return (
             <button
   key={item.title}
+  title={collapsed ? item.title : ""}
   className={`group relative mb-3 flex w-full items-center ${
   collapsed ? "justify-center px-0" : "gap-4 px-4"
 } rounded-xl py-3 text-left transition-all duration-300 hover:translate-x-1
   ${
     item.title === "Dashboard"
-      ? "border border-cyan-500/30 bg-cyan-500/10"
+  ? "border border-cyan-500/30 bg-cyan-500/10 shadow-lg shadow-cyan-500/10 before:absolute before:left-0 before:top-2 before:h-8 before:w-1 before:rounded-r-full before:bg-cyan-400"
       : "border border-transparent hover:border-cyan-500/20 hover:bg-cyan-500/10"
   }`}
 >
