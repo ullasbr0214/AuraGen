@@ -13,6 +13,7 @@ import {
 
 import { useAura } from "../context/AuraContext";
 import Editor from "@monaco-editor/react";
+import Card from "./ui/Card";
 
 export default function CodeEditor() {
   const { generatedCode, setGeneratedCode } = useAura();
@@ -83,7 +84,7 @@ export default function GeneratedComponent() {
 }, []);
 
   return (
-    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl overflow-hidden">
+    <Card className="overflow-hidden">
 
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
@@ -246,7 +247,7 @@ onChange={(value) => {
 
       </div>
 
-    </section>
+    </Card>
   );
 }
 

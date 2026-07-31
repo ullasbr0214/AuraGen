@@ -14,6 +14,7 @@ import { useAura } from "../context/AuraContext";
 import { useTelemetryContext } from "../context/TelemetryContext";
 import { generateAuraCode } from "../services/aiService";
 import LoadingOverlay from "./LoadingOverlay";
+import Card from "./ui/Card";
 
 export default function AskAura() {
   const {
@@ -102,8 +103,7 @@ addGeneratedComponent({
 };
 
   return (
-    <section className="flex h-full flex-col rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl overflow-hidden">
-
+    <Card className="flex h-full flex-col overflow-hidden p-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="rounded-xl bg-cyan-500/10 p-3">
@@ -196,6 +196,6 @@ addGeneratedComponent({
 
       <LoadingOverlay loading={loading} />
 
-    </section>
+    </Card>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { useAura } from "../context/AuraContext";
+import Card from "./ui/Card";
 
 export default function DynamicRenderer() {
   const { generatedComponents, setGeneratedComponents } = useAura();
@@ -31,7 +32,7 @@ export default function DynamicRenderer() {
 };
 
   return (
-    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl">
+    <Card className="p-6">
 
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -205,6 +206,6 @@ export default function DynamicRenderer() {
 
       </div>
 
-    </section>
+    </Card>
   );
 }
