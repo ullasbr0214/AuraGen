@@ -1,9 +1,12 @@
 "use client";
 
+
 import { useEffect } from "react";
 
 import Navbar from "./Navbar";
+import CommandPalette from "./CommandPalette";
 import WelcomeCard from "./WelcomeCard";
+import HistoryPanel from "./chat/HistoryPanel";
 import AIStatusCard from "./AIStatusCard";
 import TelemetryTracker from "./TelemetryTracker";
 import AskAura from "./AskAura";
@@ -54,6 +57,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-transparent p-8 text-white">
 
       <Navbar />
+      <CommandPalette />
 
       {/* Dashboard Header */}
       <div className="mt-6 mb-8 rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 p-6">
@@ -126,31 +130,33 @@ export default function Dashboard() {
       </div>
 
       {/* ===================== AI Workspace ===================== */}
-<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 backdrop-blur-xl p-6 shadow-2xl">
+<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 p-6 shadow-2xl backdrop-blur-xl">
 
   <div className="mb-6">
     <h2 className="text-2xl font-bold text-cyan-300">
       AI Workspace
     </h2>
 
-    <p className="text-slate-400 mt-1">
+    <p className="mt-1 text-slate-400">
       Build, preview and refine adaptive interfaces with Aura AI.
     </p>
   </div>
 
-  <div className="grid gap-6 xl:grid-cols-[320px_minmax(500px,1.3fr)_minmax(450px,1fr)] items-start">
-    {/* Left Panel */}
+  <div className="grid gap-6 xl:grid-cols-[320px_1fr_520px]">
+
+    {/* Left */}
     <div className="space-y-6">
+      <HistoryPanel />
       <ChatPanel />
       <AskAura />
     </div>
 
-    {/* Code Editor */}
+    {/* Center */}
     <div className="rounded-2xl border border-cyan-500/10 bg-slate-950/40 p-4">
       <CodeEditor />
     </div>
 
-    {/* Live Preview */}
+    {/* Right */}
     <div className="rounded-2xl border border-violet-500/10 bg-slate-950/40 p-4">
       <ErrorBoundary>
         <DynamicRenderer />

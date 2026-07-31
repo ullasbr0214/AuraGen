@@ -84,7 +84,11 @@ addGeneratedComponent({
   jsx: result.code,
 });
     // Save the AI response
-    addMessage("assistant", result.response);
+    addMessage(
+  "assistant",
+  result.response,
+  result.code
+);
 
     setPrompt("");
     setAiStatus("Completed");

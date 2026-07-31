@@ -9,6 +9,9 @@ import {
   Cpu,
   Trash2,
   Clock3,
+  Copy,
+  Download,
+  BadgeCheck,
 } from "lucide-react";
 
 type AIEvent = {
@@ -43,8 +46,46 @@ export default function ResponseCard() {
   }, []);
 
   const clearEvents = () => {
-    setEvents([]);
-  };
+  setEvents([]);
+};
+
+const copySummary = async () => {
+  await navigator.clipboard.writeText(
+    events
+      .map(
+        (e) =>
+          `${e.title}\n${e.message}\n${e.time}`
+      )
+      .join("\n\n")
+  );
+};
+
+const downloadSummary = () => {
+  const blob = new Blob(
+    [
+      events
+        .map(
+          (e) =>
+            `${e.title}\n${e.message}\n${e.time}`
+        )
+        .join("\n\n"),
+    ],
+    {
+      type: "text/plain",
+    }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "AuraGen-AI-Events.txt";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
 
   const getIcon = (status: AIEvent["status"]) => {
     switch (status) {
@@ -61,39 +102,54 @@ export default function ResponseCard() {
     <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
 
-        <div className="flex items-center gap-3">
-          <BrainCircuit className="text-cyan-400" size={28} />
+  <div className="flex items-center gap-3">
 
-          <div>
-            <h2 className="text-2xl font-bold text-white">
-              AI Event Feed
-            </h2>
+    <BrainCircuit className="text-cyan-400" size={28} />
 
-            <p className="text-sm text-slate-400">
-              Live cognitive intelligence updates
-            </p>
-          </div>
-        </div>
+    <div>
+      <h2 className="text-2xl font-bold text-white">
+        Aura AI Activity Timeline
+      </h2>
 
-        <div className="flex items-center gap-3">
+      <p className="text-sm text-slate-400">
+        Real-time AI generation, telemetry and adaptive UI events
+      </p>
+    </div>
 
-          <span className="rounded-full bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
-            Active
-          </span>
+  </div>
 
-          <button
-            onClick={clearEvents}
-            className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500/20"
-          >
-            <Trash2 size={16} />
-            Clear
-          </button>
+  <div className="flex items-center gap-3">
 
-        </div>
+    <span className="rounded-full bg-green-500/10 px-4 py-2 text-sm font-semibold text-green-300">
+      ● AI Online
+    </span>
 
-      </div>
+    <button
+      onClick={copySummary}
+      className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2 hover:bg-cyan-500/20"
+    >
+      <Copy size={18} className="text-cyan-300" />
+    </button>
+
+    <button
+      onClick={downloadSummary}
+      className="rounded-xl border border-green-500/20 bg-green-500/10 p-2 hover:bg-green-500/20"
+    >
+      <Download size={18} className="text-green-300" />
+    </button>
+
+    <button
+      onClick={clearEvents}
+      className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 hover:bg-red-500/20"
+    >
+      <Trash2 size={18} className="text-red-300" />
+    </button>
+
+  </div>
+
+</div>
 
       {/* Counter */}
       <div className="mt-5 text-sm text-cyan-300">
@@ -114,8 +170,8 @@ export default function ResponseCard() {
             />
 
             <h3 className="mt-5 text-xl font-bold text-white">
-              No Events
-            </h3>
+  No Events
+</h3>
 
             <p className="mt-2 text-slate-400">
               Waiting for Aura AI...
@@ -129,7 +185,7 @@ export default function ResponseCard() {
 
             <div
               key={event.id}
-              className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5 transition hover:border-cyan-500/30"
+              className="rounded-2xl border border-slate-700 bg-slate-800/60 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/10"
             >
 
               <div className="flex items-center justify-between">
@@ -140,9 +196,16 @@ export default function ResponseCard() {
 
                   <div>
 
-                    <h3 className="font-semibold text-white">
-                      {event.title}
-                    </h3>
+                    <h3 className="flex items-center gap-2 font-semibold text-white">
+
+  <BadgeCheck
+    size={16}
+    className="text-cyan-400"
+  />
+
+  {event.title}
+
+</h3>
 
                     <p className="mt-2 text-sm text-slate-300">
                       {event.message}

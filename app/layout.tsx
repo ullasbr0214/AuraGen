@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuraProvider } from "./context/AuraContext";
 import { TelemetryProvider } from "./context/TelemetryContext";
 import { ChatProvider } from "./context/ChatContext";
+import { ProjectProvider } from "./context/ProjectContext";
 
 export const metadata: Metadata = {
   title: "AuraGen",
@@ -21,7 +22,9 @@ export default function RootLayout({
         <ChatProvider>
           <TelemetryProvider>
             <AuraProvider>
-              {children}
+              <ProjectProvider>
+  {children}
+</ProjectProvider>
             </AuraProvider>
           </TelemetryProvider>
         </ChatProvider>
