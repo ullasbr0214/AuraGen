@@ -52,9 +52,15 @@ export default function DynamicRenderer() {
 
         <div className="flex items-center gap-3">
 
-          <span className="rounded-full bg-green-500/10 px-4 py-2 font-semibold text-green-400">
-            ● Live
-          </span>
+          <div className="flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-4 py-2">
+
+  <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+
+  <span className="text-sm font-semibold text-green-300">
+    Live Preview Active
+  </span>
+
+</div>
 
           {components.length > 0 && (
             <button
@@ -91,12 +97,22 @@ export default function DynamicRenderer() {
             />
 
             <h3 className="mt-5 text-xl font-bold text-white">
-              Waiting for AI...
-            </h3>
+  No Components Generated
+</h3>
 
-            <p className="mt-2 text-slate-400">
-              Generate your first component using Aura AI.
-            </p>
+<p className="mt-3 text-slate-400">
+  Start by entering a prompt in the Aura AI Copilot.
+</p>
+
+<div className="mt-6 space-y-2 text-left text-sm text-slate-400">
+
+  <p>① Enter a prompt</p>
+
+  <p>② Click Generate UI</p>
+
+  <p>③ Preview your component instantly</p>
+
+</div>
 
           </div>
 
@@ -169,8 +185,8 @@ export default function DynamicRenderer() {
 
                   </div>
 
-                  <div className="grid gap-6 lg:grid-cols-2">
-  <pre className="max-h-96 overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
+                  <div className="grid gap-6 lg:grid-cols-2 items-stretch">
+ <pre className="h-[420px] overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
     <code>{component.jsx}</code>
   </pre>
 

@@ -102,7 +102,7 @@ addGeneratedComponent({
 };
 
   return (
-    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl">
+    <section className="flex h-full flex-col rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl backdrop-blur-xl overflow-hidden">
 
       {/* Header */}
       <div className="flex items-center gap-3">
@@ -136,13 +136,12 @@ addGeneratedComponent({
 
       {/* Prompt */}
       <textarea
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        rows={8}
-        placeholder="Example: Build a futuristic AI dashboard with telemetry analytics and adaptive cards..."
-        className="mt-6 w-full rounded-2xl border border-slate-700 bg-slate-800/70 p-5 text-white outline-none transition focus:border-cyan-400"
-      />
-
+  value={prompt}
+  onChange={(e) => setPrompt(e.target.value)}
+  rows={5}
+  placeholder="Example: Build a futuristic AI dashboard with telemetry analytics and adaptive cards..."
+  className="mt-6 min-h-[160px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-800/70 p-5 text-white outline-none transition focus:border-cyan-400"
+/>
       {/* Footer */}
       <div className="mt-6 flex items-center justify-between">
 

@@ -1,16 +1,15 @@
 "use client";
 
-import useTelemetry from "../hooks/useTelemetry";
+import { useAura } from "../context/AuraContext";
 import { Brain, Activity } from "lucide-react";
 
 
 export default function CognitiveGauge() {
-  const {
-    cognitiveLoad,
-    stressLevel,
-    focusLevel,
-    productivity,
-  } = useTelemetry();
+ const {
+  cognitiveLoad,
+  stressLevel,
+  focusScore,
+} = useAura();
 
   const color =
     cognitiveLoad >= 80
@@ -73,11 +72,17 @@ export default function CognitiveGauge() {
 
       <div className="mt-8 grid grid-cols-2 gap-4">
 
-        <StatusCard title="Focus" value={`${focusLevel}%`} />
+        <StatusCard
+  title="Focus"
+  value={`${focusScore}%`}
+/>
 
         <StatusCard title="Stress" value={stressLevel} />
 
-        <StatusCard title="Productivity" value={`${productivity}%`} />
+        <StatusCard
+  title="Productivity"
+  value={`${focusScore}%`}
+/>
 
         <StatusCard
           title="Status"

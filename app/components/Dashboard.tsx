@@ -125,28 +125,41 @@ export default function Dashboard() {
         <TelemetryTracker />
       </div>
 
-      {/* Main Workspace */}
-      <div className="mt-8 grid grid-cols-1 xl:grid-cols-[340px_1fr_1fr] gap-6 items-start">
+      {/* ===================== AI Workspace ===================== */}
+<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 backdrop-blur-xl p-6 shadow-2xl">
 
-        {/* Left Panel */}
-        <div className="space-y-6">
-          <ChatPanel />
-          <AskAura />
-        </div>
+  <div className="mb-6">
+    <h2 className="text-2xl font-bold text-cyan-300">
+      AI Workspace
+    </h2>
 
-        {/* Center Panel */}
-        <div className="min-w-0">
-          <CodeEditor />
-        </div>
+    <p className="text-slate-400 mt-1">
+      Build, preview and refine adaptive interfaces with Aura AI.
+    </p>
+  </div>
 
-        {/* Right Panel */}
-        <div className="min-w-0">
-          <ErrorBoundary>
-            <DynamicRenderer />
-          </ErrorBoundary>
-        </div>
+  <div className="grid gap-6 xl:grid-cols-[320px_minmax(500px,1.3fr)_minmax(450px,1fr)] items-start">
+    {/* Left Panel */}
+    <div className="space-y-6">
+      <ChatPanel />
+      <AskAura />
+    </div>
 
-      </div>
+    {/* Code Editor */}
+    <div className="rounded-2xl border border-cyan-500/10 bg-slate-950/40 p-4">
+      <CodeEditor />
+    </div>
+
+    {/* Live Preview */}
+    <div className="rounded-2xl border border-violet-500/10 bg-slate-950/40 p-4">
+      <ErrorBoundary>
+        <DynamicRenderer />
+      </ErrorBoundary>
+    </div>
+
+  </div>
+
+</section>
 
       {/* AI Components */}
       <div className="mt-8 space-y-6">
