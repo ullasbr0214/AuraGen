@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
@@ -11,12 +12,23 @@ import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [agree, setAgree] = useState(false);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("AuraGen Register");
+    if (!agree) {
+      alert("Please accept the Terms & Conditions.");
+      return;
+    }
+
+    localStorage.setItem("isRegistered", "true");
+
+    alert("✅ Account created successfully!");
+
+    router.push("/login");
   };
 
   return (
@@ -64,9 +76,7 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               checked={agree}
-              onChange={(e) =>
-                setAgree(e.target.checked)
-              }
+              onChange={(e) => setAgree(e.target.checked)}
               className="mt-1"
             />
 
@@ -83,50 +93,36 @@ export default function RegisterPage() {
           >
             Create Account
           </button>
-                    {/* Divider */}
 
           <div className="relative py-2">
 
             <div className="absolute inset-0 flex items-center">
-
               <div className="w-full border-t border-slate-700" />
-
             </div>
 
             <div className="relative flex justify-center">
-
               <span className="bg-slate-900 px-4 text-sm text-slate-400">
                 OR
               </span>
-
             </div>
 
           </div>
 
-          {/* Google Signup */}
-
-         <button
-  type="button"
-  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white hover:border-cyan-500"
->
-  <FcGoogle size={22} />
-  Continue with Google
-</button>
-
-          {/* GitHub Signup */}
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white hover:border-cyan-500"
+          >
+            <FcGoogle size={22} />
+            Continue with Google
+          </button>
 
           <button
             type="button"
             className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-800"
           >
-
             <FaGithub size={20} />
-
             Continue with GitHub
-
           </button>
-
-          {/* Login Link */}
 
           <div className="pt-3 text-center">
 
