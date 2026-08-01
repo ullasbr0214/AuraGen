@@ -1,11 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
-import {
-  Bot,
-  Sparkles,
-} from "lucide-react";
+import { Bot, Sparkles } from "lucide-react";
 
 import { useChat } from "@/app/context/ChatContext";
 
@@ -15,16 +11,11 @@ import ChatInput from "./ChatInput";
 import TypingIndicator from "./TypingIndicator";
 
 export default function ChatPanel() {
-  const {
-    messages,
-    addMessage,
-  } = useChat();
+  const { messages, addMessage } = useChat();
 
-  const bottomRef =
-    useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  const [isTyping, setIsTyping] =
-    useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -32,15 +23,11 @@ export default function ChatPanel() {
     });
   }, [messages, isTyping]);
 
-  const handleSend = async (
-    prompt: string
-  ) => {
+  const handleSend = async (prompt: string) => {
     if (!prompt.trim()) return;
 
     setIsTyping(true);
 
-    // Placeholder for Gemini API
-    // Replace this section later
     setTimeout(() => {
       addMessage(
         "assistant",
@@ -56,38 +43,36 @@ Gemini integration will generate the response here.`
   };
 
   return (
-    <section className="flex h-full flex-col rounded-3xl border border-cyan-500/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl">
+    <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-3xl border border-cyan-500/10 bg-slate-900/70 shadow-2xl backdrop-blur-xl">
 
       <ChatHeader />
 
-      {/* Chat Body */}
-
-      <div className="flex-1 overflow-y-auto p-6">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 py-4">
 
         {messages.length === 0 ? (
-                    <div className="flex h-full flex-col items-center justify-center py-20 text-center">
 
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 shadow-2xl">
+          <div className="flex flex-1 flex-col items-center justify-center text-center">
+
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 shadow-xl">
 
               <Bot
-                size={42}
+                size={38}
                 className="text-white"
               />
 
             </div>
 
-            <h2 className="mt-8 text-3xl font-bold text-white">
+            <h2 className="mt-5 text-2xl font-bold text-white">
               Welcome to Aura AI
             </h2>
 
-            <p className="mt-4 max-w-2xl leading-8 text-slate-400">
+            <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
               Generate React components, Tailwind UI,
-              dashboards, landing pages, reusable code,
-              adaptive layouts and intelligent interfaces
-              powered by AuraGen AI.
+              dashboards and reusable interfaces
+              powered by Aura AI.
             </p>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-6 flex w-full flex-col gap-3">
 
               {[
                 "Create Admin Dashboard",
@@ -99,17 +84,21 @@ Gemini integration will generate the response here.`
                 <button
                   key={item}
                   onClick={() => handleSend(item)}
-                  className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 hover:bg-cyan-500/20"
+                  className="w-full rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-left transition hover:border-cyan-400 hover:bg-cyan-500/20"
                 >
 
-                  <Sparkles
-                    size={18}
-                    className="mb-3 text-cyan-400"
-                  />
+                  <div className="flex items-center gap-3">
 
-                  <p className="font-medium text-white">
-                    {item}
-                  </p>
+                    <Sparkles
+                      size={18}
+                      className="text-cyan-400"
+                    />
+
+                    <span className="font-medium text-white">
+                      {item}
+                    </span>
+
+                  </div>
 
                 </button>
 
@@ -121,7 +110,7 @@ Gemini integration will generate the response here.`
 
         ) : (
 
-          <div className="space-y-6">
+          <div className="space-y-5">
 
             {messages.map((message) => (
 
@@ -144,9 +133,7 @@ Gemini integration will generate the response here.`
 
       </div>
 
-      {/* Input Area */}
-
-      <div className="border-t border-slate-800 p-5">
+      <div className="border-t border-slate-800 bg-slate-900 p-4">
 
         <ChatInput
           onSend={handleSend}
@@ -155,37 +142,37 @@ Gemini integration will generate the response here.`
       </div>
             {/* Footer */}
 
-      <div className="border-t border-slate-800 bg-slate-950/40 px-6 py-4">
+      <div className="border-t border-slate-800 bg-slate-950 px-4 py-3">
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
 
           <div className="flex items-center gap-2 text-sm text-slate-400">
 
             <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-400" />
 
-            Aura AI Online
+            <span>Aura AI Online</span>
 
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
 
             <span>
               Messages:
-              <span className="ml-2 font-semibold text-cyan-300">
+              <span className="ml-1 font-semibold text-cyan-300">
                 {messages.length}
               </span>
             </span>
 
             <span>
               Model:
-              <span className="ml-2 font-semibold text-violet-300">
+              <span className="ml-1 font-semibold text-violet-300">
                 Gemini
               </span>
             </span>
 
             <span>
               Workspace:
-              <span className="ml-2 font-semibold text-green-300">
+              <span className="ml-1 font-semibold text-green-300">
                 Ready
               </span>
             </span>
@@ -197,5 +184,5 @@ Gemini integration will generate the response here.`
       </div>
 
     </section>
-      );
+  );
 }

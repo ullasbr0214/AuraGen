@@ -1,15 +1,9 @@
-import type { Metadata } from "next";
 import "./globals.css";
 
-import { AuraProvider } from "./context/AuraContext";
+import { AuthProvider } from "./context/AuthContext";
 import { TelemetryProvider } from "./context/TelemetryContext";
+import { AuraProvider } from "./context/AuraContext";
 import { ChatProvider } from "./context/ChatContext";
-import { ProjectProvider } from "./context/ProjectContext";
-
-export const metadata: Metadata = {
-  title: "AuraGen",
-  description: "Self-Healing Generative UI via Cognitive Load",
-};
 
 export default function RootLayout({
   children,
@@ -19,15 +13,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ChatProvider>
+        <AuthProvider>
+
           <TelemetryProvider>
+
             <AuraProvider>
-              <ProjectProvider>
-  {children}
-</ProjectProvider>
+
+              <ChatProvider>
+
+                {children}
+
+              </ChatProvider>
+
             </AuraProvider>
+
           </TelemetryProvider>
-        </ChatProvider>
+
+        </AuthProvider>
       </body>
     </html>
   );

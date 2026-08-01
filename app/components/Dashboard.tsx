@@ -12,12 +12,8 @@ import TelemetryTracker from "./TelemetryTracker";
 import AskAura from "./AskAura";
 import CodeEditor from "./CodeEditor";
 import DynamicRenderer from "./DynamicRenderer";
-import AdaptiveDashboard from "./AdaptiveDashboard";
-import SelfHealingEngine from "./SelfHealingEngine";
-import ChatPanel from "./chat/ChatPanel";
 import ErrorBoundary from "./ErrorBoundary";
 import CognitiveGauge from "./CognitiveGauge";
-import ResponseCard from "./ResponseCard";
 import Footer from "./Footer";
 
 import { getSocket } from "../services/socket";
@@ -130,9 +126,11 @@ export default function Dashboard() {
       </div>
 
       {/* ===================== AI Workspace ===================== */}
-<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 p-6 shadow-2xl backdrop-blur-xl min-h-[900px]">
+
+<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 p-6 shadow-2xl backdrop-blur-xl">
 
   <div className="mb-6">
+
     <h2 className="text-2xl font-bold text-cyan-300">
       AI Workspace
     </h2>
@@ -140,41 +138,49 @@ export default function Dashboard() {
     <p className="mt-1 text-slate-400">
       Build, preview and refine adaptive interfaces with Aura AI.
     </p>
+
   </div>
 
   <div className="grid gap-6 lg:grid-cols-[320px_1fr_520px] items-start">
 
     {/* Left */}
-    <div className="flex h-[750px] flex-col gap-6 overflow-hidden">
+    <div className="space-y-6">
 
-  <HistoryPanel />
+      <HistoryPanel />
 
-  <ChatPanel />
+      <AskAura />
 
-</div>
+      {/* Uncomment if you want full chat */}
+      {/* <ChatPanel /> */}
+
+    </div>
 
     {/* Center */}
     <div className="rounded-2xl border border-cyan-500/10 bg-slate-950/40 p-4 min-h-[750px]">
+
       <CodeEditor />
+
     </div>
 
     {/* Right */}
     <div className="rounded-2xl border border-violet-500/10 bg-slate-950/40 p-4 min-h-[750px]">
+
       <ErrorBoundary>
+
         <DynamicRenderer />
+
       </ErrorBoundary>
+
     </div>
 
   </div>
 
 </section>
+{/* Footer */}
+<div className="mt-8">
+  <Footer />
+</div>
 
-
-      {/* Footer */}
-      <div className="mt-8">
-        <Footer />
-      </div>
-
-    </div>
-  );
+</div>
+);
 }

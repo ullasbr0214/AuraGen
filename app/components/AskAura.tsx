@@ -1,205 +1,69 @@
 "use client";
 
 import { useState } from "react";
-import { useChat } from "../context/ChatContext";
-import {
-  Sparkles,
-  Send,
-  Wand2,
-  Loader2,
-  Lightbulb,
-} from "lucide-react";
-
-import { useAura } from "../context/AuraContext";
-import { useTelemetryContext } from "../context/TelemetryContext";
-import { generateAuraCode } from "../services/aiService";
-import LoadingOverlay from "./LoadingOverlay";
-import Card from "./ui/Card";
+import { Sparkles, Wand2 } from "lucide-react";
+import { useChat } from "@/app/context/ChatContext";
 
 export default function AskAura() {
-  const {
-  prompt,
-  setPrompt,
-  setResponse,
-  setGeneratedCode,
-  addGeneratedComponent,
-
-  aiStatus,
-  setAiStatus,
-
-  cognitiveLoad,
-  setCognitiveLoad,
-
-  stressLevel,
-  setStressLevel,
-
-  focusScore,
-  setFocusScore,
-} = useAura();
-  const { telemetry } = useTelemetryContext();
-
-  const [loading, setLoading] = useState(false);
-
   const { addMessage } = useChat();
 
-  const suggestions = [
-    "Generate a responsive login page",
-    "Create a dashboard with charts",
-    "Build a pricing section",
-    "Design a modern landing page",
-  ];
+  const [prompt, setPrompt] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const generateCode = async () => {
-  if (!prompt.trim()) {
-    setResponse("⚠ Please enter a prompt first.");
-    return;
-  }
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
 
-  // Save the user's prompt
-  addMessage("user", prompt);
+    setLoading(true);
 
-  setLoading(true);
-  setAiStatus("Sending Prompt...");
+    addMessage("user", prompt);
 
-  try {
-    const result = await generateAuraCode(prompt, {
-      hesitation: telemetry.hesitationTime,
-      clicks: telemetry.clicks,
-    });
-setAiStatus("Generating UI...");setAiStatus("Generating UI...");
-    setResponse(result.response);
-    setAiStatus("Rendering...");
-setGeneratedCode(result.code);
+    // Gemini API will be added here in the next step.
 
-setCognitiveLoad(result.cognitiveLoad);
+    setTimeout(() => {
+      addMessage(
+        "assistant",
+        "Generating your React component..."
+      );
 
-setStressLevel(result.stressLevel);
+      setLoading(false);
+    }, 800);
+  };
+    return (
+    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl">
 
-setFocusScore(result.focusScore);
-
-addGeneratedComponent({
-  id: Date.now(),
-  title: "AI Generated Component",
-  description: result.response,
-  jsx: result.code,
-});
-    // Save the AI response
-    addMessage(
-  "assistant",
-  result.response,
-  result.code
-);
-
-    setPrompt("");
-    setAiStatus("Completed");
-  } catch (error) {
-    console.error(error);
-
-    setResponse(
-      error instanceof Error
-        ? `❌ ${error.message}`
-        : "❌ Unable to connect to Aura Backend."
-    );
-    setAiStatus("Failed");
-  } finally {
-    setLoading(false);
-  }
-};
-
-  return (
-    <Card className="flex h-full flex-col overflow-hidden p-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="rounded-xl bg-cyan-500/10 p-3">
-          <Sparkles className="text-cyan-400" />
-        </div>
 
-        <div>
-          <h2 className="text-2xl font-bold text-white">
-            Aura AI Copilot
-          </h2>
+        <Sparkles className="text-cyan-400" />
 
-          <p className="text-slate-400">
-            Describe the interface you want AuraGen to generate.
-          </p>
-        </div>
+        <h2 className="text-xl font-bold text-white">
+          Aura AI Copilot
+        </h2>
+
       </div>
 
-      {/* Suggestions */}
-      <div className="mt-6 flex flex-wrap gap-3">
-        {suggestions.map((item) => (
-          <button
-            key={item}
-            onClick={() => setPrompt(item)}
-            className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-300 transition hover:bg-cyan-500/20"
-          >
-            {item}
-          </button>
-        ))}
-      </div>
+      <p className="mt-2 text-sm text-slate-400">
+        Describe the interface you want AuraGen to build.
+      </p>
 
-      {/* Prompt */}
       <textarea
-  value={prompt}
-  onChange={(e) => setPrompt(e.target.value)}
-  rows={5}
-  placeholder="Example: Build a futuristic AI dashboard with telemetry analytics and adaptive cards..."
-  className="mt-6 min-h-[160px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-800/70 p-5 text-white outline-none transition focus:border-cyan-400"
-/>
-      {/* Footer */}
-      <div className="mt-6 flex items-center justify-between">
+        rows={6}
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Example: Build a modern analytics dashboard with charts and dark theme..."
+        className="mt-5 w-full rounded-2xl border border-slate-700 bg-slate-950 p-4 text-white outline-none focus:border-cyan-500"
+      />
 
-        <div className="flex items-center gap-2 text-slate-400">
-          <Lightbulb size={18} />
+      <button
+        onClick={handleGenerate}
+        disabled={loading}
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-cyan-500 py-3 font-semibold text-white transition hover:bg-cyan-400 disabled:opacity-50"
+      >
+        <Wand2 size={18} />
 
-          <span className="text-sm">
-            AI uses your prompt to generate React components.
-          </span>
-        </div>
+        {loading ? "Generating..." : "Generate UI"}
 
-        <button
-          onClick={generateCode}
-          disabled={loading}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-6 py-3 font-semibold text-white transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="animate-spin" size={18} />
-              Generating...
-            </>
-          ) : (
-            <>
-              <Send size={18} />
-              Generate UI
-            </>
-          )}
-        </button>
+      </button>
 
-      </div>
-
-      {/* AI Pipeline */}
-      <div className="mt-8 rounded-2xl border border-cyan-500/10 bg-slate-800/50 p-5">
-
-        <div className="flex items-center gap-3">
-
-          <Wand2 className="text-cyan-400" />
-
-          <div>
-            <h3 className="font-semibold text-white">
-              AI Generation Pipeline
-            </h3>
-
-            <p className="mt-1 text-sm text-slate-400">
-              Prompt → AI Model → React Component → Dynamic Renderer
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-
-      <LoadingOverlay loading={loading} />
-
-    </Card>
+    </section>
   );
 }
