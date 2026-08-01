@@ -8,11 +8,11 @@ import { FaGithub } from "react-icons/fa";
 
 import { registerUser } from "../services/auth";
 import { useEffect } from "react";
-
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
+import { toast } from "react-hot-toast/headless";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,12 +38,12 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (!agree) {
-      alert("Please accept the Terms & Conditions.");
+      toast.error("Please accept the Terms & Conditions.");
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
@@ -58,11 +58,11 @@ export default function RegisterPage() {
 
       console.log(res.data);
 
-      alert("✅ Registration Successful!");
+      toast.success("Registration Successful");
 
       router.push("/login");
     } catch (err: any) {
-      alert(
+      toast.error(
         err?.response?.data?.message ||
           "Registration Failed"
       );

@@ -4,6 +4,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { TelemetryProvider } from "./context/TelemetryContext";
 import { AuraProvider } from "./context/AuraContext";
 import { ChatProvider } from "./context/ChatContext";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -13,24 +14,28 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>
+  <AuthProvider>
+    <TelemetryProvider>
+      <AuraProvider>
 
-          <TelemetryProvider>
+        {children}
 
-            <AuraProvider>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#0f172a",
+              color: "#fff",
+              border: "1px solid #06b6d4",
+            },
+          }}
+        />
 
-              <ChatProvider>
-
-                {children}
-
-              </ChatProvider>
-
-            </AuraProvider>
-
-          </TelemetryProvider>
-
-        </AuthProvider>
-      </body>
+      </AuraProvider>
+    </TelemetryProvider>
+  </AuthProvider>
+</body>
     </html>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import toast from "react-hot-toast";
 import {
   LayoutDashboard,
   BrainCircuit,
@@ -84,10 +84,14 @@ export default function Sidebar() {
     );
   }, [collapsed]);
 
-  const handleLogout = () => {
+ const handleLogout = () => {
   localStorage.removeItem("token");
 
-  router.replace("/login");
+  toast.success("Logged out successfully");
+
+  setTimeout(() => {
+    router.replace("/login");
+  }, 800);
 };
 
   return (

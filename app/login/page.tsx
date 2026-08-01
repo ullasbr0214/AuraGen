@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-
+import toast from "react-hot-toast";
 import { loginUser } from "../services/auth";
 import { useEffect } from "react";
+
 
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
@@ -35,10 +36,12 @@ const [loading, setLoading] = useState(false);
 
     localStorage.setItem("token", res.data.token);
 
-    router.push("/");
+    toast.success("Login Successful");
+
+router.push("/");
 
   } catch (err) {
-    alert("Invalid email or password.");
+    toast.error("Invalid email or password.");
     console.error(err);
   }
 
@@ -49,7 +52,9 @@ useEffect(() => {
   const token = localStorage.getItem("token");
 
   if (token) {
-    router.replace("/");
+    toast.success("Login Successful");
+
+router.push("/");
   }
 }, [router]);
 

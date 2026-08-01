@@ -4,6 +4,7 @@ import { Search, Clock3, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useChat } from "../../context/ChatContext";
 import { useAura } from "../../context/AuraContext";
+import toast from "react-hot-toast";
 
 export default function HistoryPanel() {
   const { messages, clearMessages } = useChat();
@@ -33,7 +34,12 @@ export default function HistoryPanel() {
         </h2>
 
         <button
-          onClick={clearMessages}
+          onClick={() => {
+  if (confirm("Clear all history?")) {
+    clearMessages();
+    toast.success("History Cleared");
+  }
+}}
           className="rounded-lg border border-red-500/20 bg-red-500/10 p-2 hover:bg-red-500/20"
         >
           <Trash2
@@ -80,13 +86,15 @@ export default function HistoryPanel() {
 
             <div
   key={item.id}
-  onClick={() => {
-    setPrompt(item.content);
+ onClick={() => {
+  setPrompt(item.content);
 
-    if (item.code) {
-      setGeneratedCode(item.code);
-    }
-  }}
+  if (item.code) {
+    setGeneratedCode(item.code);
+  }
+
+  toast.success("Prompt Loaded");
+}}
               className="cursor-pointer rounded-xl border border-slate-700 bg-slate-800/60 p-4 transition hover:border-cyan-500/30 hover:bg-slate-800"
             >
 

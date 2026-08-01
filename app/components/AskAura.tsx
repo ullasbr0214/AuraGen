@@ -5,12 +5,13 @@ import { Sparkles, Wand2 } from "lucide-react";
 
 import { useChat } from "@/app/context/ChatContext";
 import { useAura } from "@/app/context/AuraContext";
+import toast from "react-hot-toast";
 
 import { generateUI } from "../services/ai";
 
 export default function AskAura() {
   const { addMessage } = useChat();
-
+  
   const {
     setPrompt: setAuraPrompt,
     setGeneratedCode,
@@ -25,6 +26,7 @@ export default function AskAura() {
     if (!prompt.trim()) return;
 
     setLoading(true);
+    const loadingToast = toast.loading("Generating UI...");
 
     setAuraPrompt(prompt);
 
@@ -52,6 +54,9 @@ export default function AskAura() {
         "assistant",
         "✅ UI generated successfully."
       );
+      toast.dismiss(loadingToast);
+
+toast.success("UI Generated Successfully");
 
     } catch (err: any) {
 
@@ -64,14 +69,18 @@ export default function AskAura() {
         "❌ Failed to generate UI."
       );
 
-      alert(
-        err?.response?.data?.message ||
-        "Unable to connect to backend."
-      );
+      toast.dismiss(loadingToast);
+
+toast.error(
+  err?.response?.data?.message ||
+  "Unable to connect to backend."
+);
 
     } finally {
 
-      setLoading(false);
+      toast.dismiss(loadingToast);
+
+setLoading(false);
 
     }
   };
