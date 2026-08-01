@@ -1,211 +1,190 @@
 "use client";
-// Remove this import completely
+
 import LivePreviewPanel from "./LivePreview";
+
 import {
   LayoutPanelTop,
   CheckCircle2,
   Sparkles,
-  Code2,
   Copy,
   Trash2,
-  Clock3,
 } from "lucide-react";
 
 import { useAura } from "../context/AuraContext";
 import Card from "./ui/Card";
 
 export default function DynamicRenderer() {
-  const { generatedComponents, setGeneratedComponents } = useAura();
-  const components = generatedComponents;
+  const {
+    generatedCode,
+    setGeneratedCode,
+    generatedComponents,
+    setGeneratedComponents,
+  } = useAura();
 
   const clearAll = () => {
-  setGeneratedComponents([]);
-};
-  const copyCode = async (code: string) => {
-  if (!code) {
-    alert("No JSX code available.");
-    return;
-  }
+    setGeneratedCode("");
+    setGeneratedComponents([]);
+  };
 
-  await navigator.clipboard.writeText(code);
-  alert("✅ JSX copied successfully.");
-};
+  const copyCode = async (code: string) => {
+    if (!code) {
+      alert("No JSX code available.");
+      return;
+    }
+
+    await navigator.clipboard.writeText(code);
+
+    alert("✅ JSX copied successfully.");
+  };
 
   return (
     <Card className="p-6">
 
       {/* Header */}
+
       <div className="flex items-center justify-between">
 
         <div className="flex items-center gap-3">
-          <LayoutPanelTop className="text-cyan-400" />
+
+          <LayoutPanelTop
+            className="text-cyan-400"
+            size={28}
+          />
 
           <div>
+
             <h2 className="text-2xl font-bold text-white">
               Dynamic Renderer
             </h2>
 
             <p className="text-sm text-slate-400">
-              AI Generated React Components
+              Live AI Component Preview
             </p>
+
           </div>
+
         </div>
 
         <div className="flex items-center gap-3">
 
           <div className="flex items-center gap-2 rounded-full border border-green-500/20 bg-green-500/10 px-4 py-2">
 
-  <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
 
-  <span className="text-sm font-semibold text-green-300">
-    Live Preview Active
-  </span>
+            <span className="text-sm font-semibold text-green-300">
+              Live Preview Active
+            </span>
 
-</div>
+          </div>
 
-          {components.length > 0 && (
+          {generatedCode && (
+
             <button
               onClick={clearAll}
-              className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500/20"
+              className="flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2 text-red-400 transition hover:bg-red-500/20"
             >
+
               <Trash2 size={16} />
+
               Clear
+
             </button>
+
           )}
 
         </div>
 
       </div>
 
-      {/* Counter */}
+      {/* Status */}
 
       <div className="mt-5 text-sm text-cyan-300">
-        Generated Components :{" "}
-        <span className="font-bold">{components.length}</span>
+
+        Generated Components :
+        <span className="ml-2 font-bold">
+          {generatedCode ? 1 : 0}
+        </span>
+
       </div>
 
       {/* Content */}
 
-      <div className="mt-6 space-y-6">
-
-        {components.length === 0 ? (
+      <div className="mt-6">
+                {generatedCode.length === 0 ? (
 
           <div className="rounded-2xl border border-dashed border-cyan-500/30 bg-slate-800/40 p-10 text-center">
 
             <Sparkles
-              className="mx-auto text-cyan-400"
               size={48}
+              className="mx-auto text-cyan-400"
             />
 
             <h3 className="mt-5 text-xl font-bold text-white">
-  No Components Generated
-</h3>
+              No Components Generated
+            </h3>
 
-<p className="mt-3 text-slate-400">
-  Start by entering a prompt in the Aura AI Copilot.
-</p>
-
-<div className="mt-6 space-y-2 text-left text-sm text-slate-400">
-
-  <p>① Enter a prompt</p>
-
-  <p>② Click Generate UI</p>
-
-  <p>③ Preview your component instantly</p>
-
-</div>
+            <p className="mt-3 text-slate-400">
+              Start by entering a prompt in Aura AI Copilot and click
+              <span className="font-semibold text-cyan-300">
+                {" "}Generate UI
+              </span>.
+            </p>
 
           </div>
 
         ) : (
 
-          components.map((component, index) => (
+          <div className="rounded-2xl border border-cyan-500/20 bg-slate-800/70 p-6">
 
-            <div
-              key={component.id}
-              className="rounded-2xl border border-cyan-500/20 bg-slate-800/70 p-6"
-            >
+            <div className="mb-5 flex items-center justify-between">
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
 
-                <div className="flex items-center gap-3">
+                <CheckCircle2
+                  size={22}
+                  className="text-green-400"
+                />
 
-                  <CheckCircle2
-                    className="text-green-400"
-                    size={22}
-                  />
-
-                  <div>
-
-                    <h3 className="text-lg font-bold text-white">
-  {component.title ?? "Untitled Component"}
-</h3>
-
-                    <p className="text-sm text-slate-400">
-                      Component #{components.length - index}
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {"timestamp" in component && (
-                  <div className="flex items-center gap-2 text-sm text-slate-400">
-                    <Clock3 size={15} />
-                    {(component as any).timestamp}
-                  </div>
-                )}
+                <h3 className="text-lg font-bold text-white">
+                  Generated React Component
+                </h3>
 
               </div>
 
-              <p className="mt-4 text-slate-300">
-  {component.description ?? "No description available."}
-</p>
+              <button
+                onClick={() => copyCode(generatedCode)}
+                className="flex items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-cyan-300 transition hover:bg-cyan-500/20"
+              >
 
-              {component.jsx && (
+                <Copy size={16} />
 
-                <div className="mt-6">
+                Copy JSX
 
-                  <div className="mb-3 flex items-center justify-between">
-
-                    <div className="flex items-center gap-2 text-cyan-300">
-                      <Code2 size={18} />
-
-                      <span className="font-semibold">
-                        Generated React JSX
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() => copyCode(component.jsx ?? "")}
-                      className="flex items-center gap-2 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm text-cyan-300 transition hover:bg-cyan-500/20"
-                    >
-                      <Copy size={16} />
-                      Copy
-                    </button>
-
-                  </div>
-
-                  <div className="grid gap-6 lg:grid-cols-2 items-stretch">
- <pre className="h-[420px] overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
-    <code>{component.jsx}</code>
-  </pre>
-
-  <LivePreviewPanel code={component.jsx ?? ""} />
-</div>
-
-                </div>
-
-              )}
+              </button>
 
             </div>
 
-          ))
+            <div className="grid gap-6 lg:grid-cols-2">
+
+              <pre className="h-[450px] overflow-auto rounded-xl border border-slate-700 bg-[#08111F] p-5 text-sm leading-6 text-green-300">
+
+                <code>{generatedCode}</code>
+
+              </pre>
+
+              <LivePreviewPanel
+                code={generatedCode}
+              />
+
+            </div>
+
+          </div>
 
         )}
 
       </div>
 
     </Card>
+
   );
 }

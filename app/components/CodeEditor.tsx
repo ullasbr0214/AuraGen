@@ -23,17 +23,17 @@ export default function CodeEditor() {
    const [saved, setSaved] = useState(true);
 
   const code =
-    generatedCode ||
-`// AuraGen AI Ready
+  generatedCode.length > 0
+    ? generatedCode
+    : `// AuraGen AI Ready
 
 export default function GeneratedComponent() {
   return (
-    <div>
-      Hello AuraGen 🚀
+    <div className="flex items-center justify-center h-screen">
+      <h1>Hello AuraGen 🚀</h1>
     </div>
   );
 }`;
-
   const copyCode = async () => {
     await navigator.clipboard.writeText(code);
 
@@ -183,9 +183,9 @@ export default function GeneratedComponent() {
     defaultLanguage="typescript"
     language="typescript"
     theme="vs-dark"
-    value={generatedCode || code}
+    value={code}
 onChange={(value) => {
-  setGeneratedCode(value || "");
+  setGeneratedCode(value ?? "");
   setSaved(false);
 }}
     options={{

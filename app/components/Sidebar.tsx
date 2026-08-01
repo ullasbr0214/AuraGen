@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   LayoutDashboard,
@@ -13,7 +14,9 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   FolderKanban,
+  LogOut,
 } from "lucide-react";
+
 
 interface MenuItem {
   title: string;
@@ -62,6 +65,8 @@ export default function Sidebar() {
   const [activeMenu, setActiveMenu] =
     useState("Workspace");
 
+    const router = useRouter();
+
   useEffect(() => {
     const saved = localStorage.getItem(
       "sidebar-collapsed"
@@ -78,6 +83,12 @@ export default function Sidebar() {
       String(collapsed)
     );
   }, [collapsed]);
+
+  const handleLogout = () => {
+  localStorage.removeItem("isLoggedIn");
+
+  router.push("/login");
+};
 
   return (
     <aside
@@ -288,6 +299,14 @@ export default function Sidebar() {
               </div>
 
             </div>
+
+            <button
+  onClick={handleLogout}
+  className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 font-medium text-red-400 transition hover:bg-red-500/20"
+>
+  <LogOut size={18} />
+  Logout
+</button>
 
             <div className="mt-5 border-t border-slate-700 pt-4 text-center">
 

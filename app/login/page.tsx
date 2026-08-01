@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
@@ -12,12 +13,16 @@ import PasswordInput from "../components/auth/PasswordInput";
 
 export default function LoginPage() {
   const [remember, setRemember] = useState(false);
+  const router = useRouter();
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    console.log("AuraGen Login");
-  };
+  // Temporary login for project demo
+  localStorage.setItem("isLoggedIn", "true");
+
+  router.push("/");
+};
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">

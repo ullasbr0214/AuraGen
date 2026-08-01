@@ -11,6 +11,7 @@ import {
   ZoomOut,
 } from "lucide-react";
 
+import React from "react";
 import {
   LiveProvider,
   LivePreview,
@@ -39,6 +40,23 @@ export default function LivePreviewPanel({
       document.documentElement.requestFullscreen();
     }
   };
+  const previewCode =
+  code.trim().length > 0
+    ? code
+    : `() => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      fontSize: 28,
+      fontWeight: "bold",
+    }}
+  >
+    AuraGen Ready 🚀
+  </div>
+)`;
 
   return (
     <section className="rounded-2xl border border-cyan-500/10 bg-slate-900/70 p-5 shadow-2xl">
@@ -147,7 +165,11 @@ export default function LivePreviewPanel({
             transformOrigin: "top left",
           }}
         >
-          <LiveProvider code={code} noInline>
+          <LiveProvider
+  code={previewCode}
+  scope={{ React }}
+  noInline
+>
 
             <div className="min-h-[600px] p-6">
 
