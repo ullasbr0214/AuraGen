@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
+import { registerUser } from "../services/auth";
+import { useEffect } from "react";
+
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
@@ -16,7 +19,22 @@ export default function RegisterPage() {
 
   const [agree, setAgree] = useState(false);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    router.replace("/");
+  }
+}, [router]);
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!agree) {
@@ -24,11 +42,34 @@ export default function RegisterPage() {
       return;
     }
 
-    localStorage.setItem("isRegistered", "true");
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
 
-    alert("✅ Account created successfully!");
+    setLoading(true);
 
-    router.push("/login");
+    try {
+      const res = await registerUser(
+        name,
+        email,
+        password
+      );
+
+      console.log(res.data);
+
+      alert("✅ Registration Successful!");
+
+      router.push("/login");
+    } catch (err: any) {
+      alert(
+        err?.response?.data?.message ||
+          "Registration Failed"
+      );
+      console.error(err);
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -49,6 +90,10 @@ export default function RegisterPage() {
           <AuthInput
             label="Full Name"
             placeholder="Enter your full name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
             required
           />
 
@@ -56,18 +101,30 @@ export default function RegisterPage() {
             label="Email Address"
             type="email"
             placeholder="Enter your email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
             required
           />
 
           <PasswordInput
             label="Password"
             placeholder="Create a password"
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
             required
           />
 
           <PasswordInput
             label="Confirm Password"
             placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) =>
+              setConfirmPassword(e.target.value)
+            }
             required
           />
 
@@ -76,7 +133,9 @@ export default function RegisterPage() {
             <input
               type="checkbox"
               checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
+              onChange={(e) =>
+                setAgree(e.target.checked)
+              }
               className="mt-1"
             />
 
@@ -88,11 +147,15 @@ export default function RegisterPage() {
 
           <button
             type="submit"
-            disabled={!agree}
+            disabled={loading || !agree}
             className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Create Account
+            {loading
+              ? "Creating Account..."
+              : "Create Account"}
           </button>
+
+          {/* Divider */}
 
           <div className="relative py-2">
 
@@ -108,6 +171,8 @@ export default function RegisterPage() {
 
           </div>
 
+          {/* Google */}
+
           <button
             type="button"
             className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white hover:border-cyan-500"
@@ -116,6 +181,8 @@ export default function RegisterPage() {
             Continue with Google
           </button>
 
+          {/* GitHub */}
+
           <button
             type="button"
             className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-800"
@@ -123,6 +190,8 @@ export default function RegisterPage() {
             <FaGithub size={20} />
             Continue with GitHub
           </button>
+
+          {/* Login */}
 
           <div className="pt-3 text-center">
 

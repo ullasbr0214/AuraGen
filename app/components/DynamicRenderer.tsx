@@ -21,10 +21,16 @@ export default function DynamicRenderer() {
     setGeneratedComponents,
   } = useAura();
 
-  const clearAll = () => {
-    setGeneratedCode("");
-    setGeneratedComponents([]);
-  };
+ const clearAll = () => {
+  const ok = confirm(
+    "Clear all generated components?"
+  );
+
+  if (!ok) return;
+
+  setGeneratedCode("");
+  setGeneratedComponents([]);
+};
 
   const copyCode = async (code: string) => {
     if (!code) {
@@ -100,10 +106,10 @@ export default function DynamicRenderer() {
 
       <div className="mt-5 text-sm text-cyan-300">
 
-        Generated Components :
-        <span className="ml-2 font-bold">
-          {generatedCode ? 1 : 0}
-        </span>
+       Generated Components :
+<span className="ml-2 font-bold">
+  {generatedComponents.length}
+</span>
 
       </div>
 

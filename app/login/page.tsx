@@ -6,6 +6,9 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
+import { loginUser } from "../services/auth";
+import { useEffect } from "react";
+
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
@@ -14,15 +17,41 @@ import PasswordInput from "../components/auth/PasswordInput";
 export default function LoginPage() {
   const [remember, setRemember] = useState(false);
   const router = useRouter();
+ 
 
-  const handleLogin = (e: React.FormEvent) => {
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  // Temporary login for project demo
-  localStorage.setItem("isLoggedIn", "true");
+  setLoading(true);
 
-  router.push("/");
+  try {
+    const res = await loginUser(email, password);
+
+    console.log(res.data);
+
+    localStorage.setItem("token", res.data.token);
+
+    router.push("/");
+
+  } catch (err) {
+    alert("Invalid email or password.");
+    console.error(err);
+  }
+
+  setLoading(false);
 };
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    router.replace("/");
+  }
+}, [router]);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">
@@ -40,17 +69,21 @@ export default function LoginPage() {
         >
 
           <AuthInput
-            label="Email Address"
-            type="email"
-            placeholder="Enter your email"
-            required
-          />
+  label="Email Address"
+  type="email"
+  placeholder="Enter your email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+/>
 
           <PasswordInput
-            label="Password"
-            placeholder="Enter your password"
-            required
-          />
+  label="Password"
+  placeholder="Enter your password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+/>
 
           <div className="flex items-center justify-between">
 
@@ -82,7 +115,7 @@ export default function LoginPage() {
             type="submit"
             className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 py-3 font-semibold text-white transition hover:opacity-90"
           >
-            Sign In
+            {loading ? "Signing In..." : "Sign In"}
           </button>
                     {/* Divider */}
 
@@ -107,11 +140,11 @@ export default function LoginPage() {
           {/* Google */}
 
           <button
-  type="button"
-  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white hover:border-cyan-500"
+  type="submit"
+  disabled={loading}
+  className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
 >
-  <FcGoogle size={22} />
-  Continue with Google
+  {loading ? "Signing In..." : "Sign In"}
 </button>
           {/* GitHub */}
 

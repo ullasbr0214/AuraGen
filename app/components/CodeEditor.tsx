@@ -16,7 +16,11 @@ import Editor from "@monaco-editor/react";
 import Card from "./ui/Card";
 
 export default function CodeEditor() {
-  const { generatedCode, setGeneratedCode } = useAura();
+  const {
+  generatedCode,
+  setGeneratedCode,
+  aiStatus,
+} = useAura();
 
   const [copied, setCopied] = useState(false);
 
@@ -62,8 +66,12 @@ export default function GeneratedComponent() {
   };
 
   const clearCode = () => {
+  if (
+    confirm("Clear generated code?")
+  ) {
     setGeneratedCode("");
-  };
+  }
+};
 
   useEffect(() => {
   const handler = (e: KeyboardEvent) => {
@@ -171,7 +179,10 @@ export default function GeneratedComponent() {
 
         <Status title="Renderer" value="Ready" />
 
-        <Status title="Pipeline" value="Connected" />
+        <Status
+  title="Pipeline"
+  value={aiStatus}
+/>
 
       </div>
 

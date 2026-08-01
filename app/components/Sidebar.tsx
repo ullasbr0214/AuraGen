@@ -85,9 +85,9 @@ export default function Sidebar() {
   }, [collapsed]);
 
   const handleLogout = () => {
-  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("token");
 
-  router.push("/login");
+  router.replace("/login");
 };
 
   return (

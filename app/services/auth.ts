@@ -1,35 +1,20 @@
-import axios from "axios";
+import api from "./api";
 
-const API = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export async function login(data: {
-  email: string;
-  password: string;
-}) {
-  const response = await API.post("/auth/login", data);
-  return response.data;
-}
-
-export async function register(data: {
-  name: string;
-  email: string;
-  password: string;
-}) {
-  const response = await API.post("/auth/register", data);
-  return response.data;
-}
-
-export async function forgotPassword(email: string) {
-  const response = await API.post("/auth/forgot-password", {
+export const loginUser = async (email: string, password: string) => {
+  return api.post("/auth/login", {
     email,
+    password,
   });
+};
 
-  return response.data;
-}
-
-export default API;
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string
+) => {
+  return api.post("/auth/register", {
+    name,
+    email,
+    password,
+  });
+};

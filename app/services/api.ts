@@ -1,17 +1,10 @@
-const BASE_URL = "http://localhost:4000";
+import axios from "axios";
 
-export async function generateAura(prompt: string) {
-  const response = await fetch(`${BASE_URL}/generate`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prompt }),
-  });
+const api = axios.create({
+  baseURL: "http://localhost:4000/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-  if (!response.ok) {
-    throw new Error("Failed to generate UI");
-  }
-
-  return response.json();
-}
+export default api;
