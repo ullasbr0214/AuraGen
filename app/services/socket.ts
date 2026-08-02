@@ -4,10 +4,14 @@ import { io, Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 
-// Change this if your backend runs on another device
-const SOCKET_URL =
-  process.env.NEXT_PUBLIC_SOCKET_URL ||
-  "https://cover-patriot-overhand.ngrok-free.dev";
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+
+if (!SOCKET_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_SOCKET_URL is not defined. Please check your .env.local file."
+  );
+}
+
 export function getSocket(): Socket {
   if (!socket) {
     console.log("🔌 Connecting to AuraGen Backend:", SOCKET_URL);
@@ -22,40 +26,20 @@ export function getSocket(): Socket {
     });
 
     socket.on("connect", () => {
-      console.log("✅ Connected to AuraGen Backend");
-      console.log("🆔 Socket ID:", socket?.id);
-    });
+  console.log("✅ Connected to AuraGen Backend");
+  console.log("🆔 Socket ID:", socket!.id);
+});
 
-    socket.on("disconnect", (reason) => {
-      console.log("❌ Disconnected:", reason);
-    });
+socket.on("disconnect", (reason) => {
+  console.log("❌ Disconnected:", reason);
+});
 
-    socket.on("connect_error", (err) => {
-      console.error("❌ Connection Error:", err.message);
-    });
-
-    socket.on("reconnect_attempt", (attempt) => {
-      console.log(`🔄 Reconnect Attempt: ${attempt}`);
-    });
-
-    socket.on("reconnect", () => {
-      console.log("✅ Reconnected");
-    });
-
-    socket.on("reconnect_failed", () => {
-      console.log("❌ Reconnection Failed");
-    });
-
-    socket.on("response", (data) => {
-      console.log("📨 Backend Response:", data);
-    });
+socket.on("connect_error", (err) => {
+  console.error("❌ Connection Error:", err.message);
+});
 
     socket.on("component", (data) => {
       console.log("📦 Component Received:", data);
-    });
-
-    socket.on("reply", (data) => {
-      console.log("💬 Reply:", data);
     });
 
     socket.on("error", (err) => {
@@ -64,4 +48,9 @@ export function getSocket(): Socket {
   }
 
   return socket;
+}
+
+export function disconnectSocket() {
+  socket?.disconnect();
+  socket = null;
 }

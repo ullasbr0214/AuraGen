@@ -12,6 +12,7 @@ import {
 
 import { useAura } from "../context/AuraContext";
 import Card from "./ui/Card";
+import toast from "react-hot-toast";
 
 export default function DynamicRenderer() {
   const {
@@ -34,13 +35,31 @@ export default function DynamicRenderer() {
 
   const copyCode = async (code: string) => {
     if (!code) {
-      alert("No JSX code available.");
-      return;
-    }
+  toast.error("No JSX code available.");
+  return;
+}
 
+    try {
+  await navigator.clipboard.writeText(code);
+  toast.success("JSX copied successfully.");
+} catch {
+  toast.error("Failed to copy JSX.");
+}
+
+    toast.success("JSX copied successfully.");const copyCode = async (code: string) => {
+  if (!code) {
+    toast.error("No JSX code available.");
+    return;
+  }
+
+  try {
     await navigator.clipboard.writeText(code);
+    toast.success("JSX copied successfully.");
+  } catch {
+    toast.error("Failed to copy JSX.");
+  }
+};
 
-    alert("✅ JSX copied successfully.");
   };
 
   return (
@@ -111,6 +130,9 @@ export default function DynamicRenderer() {
   {generatedComponents.length}
 </span>
 
+<p className="mt-1 text-xs text-slate-500">
+  Live AI preview updates automatically after generation.
+</p>
       </div>
 
       {/* Content */}

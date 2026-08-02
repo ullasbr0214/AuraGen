@@ -26,7 +26,8 @@ const [loading, setLoading] = useState(false);
 
   setLoading(true);
 
-  // TODO: Replace this with backend API call
+ // Backend Integration:
+// await forgotPassword(email);
   setTimeout(() => {
     setLoading(false);
 setSent(true);
@@ -34,7 +35,6 @@ setSent(true);
 toast.success("Reset link sent successfully.");
 
 // Clear input
-setEmail("");
   }, 1200);
 };
 
@@ -101,6 +101,14 @@ return (
 </span>
 
 Please check your inbox and spam folder.
+<button
+  onClick={() => {
+    setSent(false);
+  }}
+  className="mt-4 text-cyan-400 hover:text-cyan-300"
+>
+  Resend Reset Link
+</button>
   </p>
 
 </div>

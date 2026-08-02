@@ -10,7 +10,7 @@ import {
   isStrongPassword,
 } from "../utils/validators";
 
-import { loginUser, registerUser } from "../services/auth";
+import { registerUser } from "../services/auth";
 import { useEffect } from "react";
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
@@ -31,7 +31,9 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
+  const token =
+  localStorage.getItem("token") ||
+  sessionStorage.getItem("token");
 
   if (token) {
     router.replace("/");
@@ -86,9 +88,7 @@ setConfirmPassword("");
 setAgree(false);
 
 
-toast.success("Registration Successful");
-
-router.push("/");
+router.push("/login");
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||

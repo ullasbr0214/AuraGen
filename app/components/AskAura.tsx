@@ -6,11 +6,13 @@ import { Sparkles, Wand2 } from "lucide-react";
 import { useChat } from "@/app/context/ChatContext";
 import { useAura } from "@/app/context/AuraContext";
 import toast from "react-hot-toast";
+import { useTelemetryContext } from "../context/TelemetryContext";
 
-import { generateUI } from "../services/ai";
+import { generateAuraCode } from "../services/aiService";
 
 export default function AskAura() {
   const { addMessage } = useChat();
+  const { telemetry } = useTelemetryContext();
   
   const {
     setPrompt: setAuraPrompt,
@@ -35,11 +37,17 @@ export default function AskAura() {
     addMessage("user", prompt);
 
     try {
-      const res = await generateUI(prompt);
+      const res = await generateAuraCode(prompt, {
+  hesitation: telemetry.hesitationTime,
+  clicks: telemetry.clicks,
+});
 
-      const jsx = res.data.jsx;
+      const jsx = res.code;
 
       setGeneratedCode(jsx);
+      console.log("Cognitive Load:", res.cognitiveLoad);
+console.log("Stress Level:", res.stressLevel);
+console.log("Focus Score:", res.focusScore);
 
       addGeneratedComponent({
         id: Date.now(),
@@ -56,7 +64,8 @@ export default function AskAura() {
       );
       toast.dismiss(loadingToast);
 
-toast.success("UI Generated Successfully");
+toast.success(res.response);
+setPrompt("");
 
     } catch (err: any) {
 

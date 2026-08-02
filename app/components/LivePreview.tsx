@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   Monitor,
   Smartphone,
@@ -37,7 +38,9 @@ export default function LivePreviewPanel({
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen().catch(() => {
+  console.error("Fullscreen request failed.");
+});
     }
   };
   const previewCode =
@@ -54,7 +57,7 @@ export default function LivePreviewPanel({
       fontWeight: "bold",
     }}
   >
-    AuraGen Ready 🚀
+    Waiting for AI Generated Component...
   </div>
 )`;
 
@@ -112,6 +115,13 @@ export default function LivePreviewPanel({
             <ZoomOut size={18} />
           </button>
 
+          <button
+  onClick={() => setZoom(100)}
+  className="rounded-lg bg-slate-800 px-3 py-2 text-slate-300 transition hover:bg-slate-700"
+>
+  100%
+</button>
+
           <span className="w-12 text-center text-sm text-slate-300">
             {zoom}%
           </span>
@@ -126,9 +136,10 @@ export default function LivePreviewPanel({
           </button>
 
           <button
-            onClick={() =>
-              setRefreshKey((k) => k + 1)
-            }
+            onClick={() => {
+  setRefreshKey((k) => k + 1);
+  toast.success("Preview refreshed.");
+}}
             className="rounded-lg bg-slate-800 p-2 text-slate-300 transition hover:bg-slate-700"
           >
             <RefreshCw size={18} />

@@ -14,6 +14,7 @@ import {
 import { useAura } from "../context/AuraContext";
 import Editor from "@monaco-editor/react";
 import Card from "./ui/Card";
+import toast from "react-hot-toast";
 
 export default function CodeEditor() {
   const {
@@ -39,9 +40,20 @@ export default function GeneratedComponent() {
   );
 }`;
   const copyCode = async () => {
-    await navigator.clipboard.writeText(code);
+    try {
+  await navigator.clipboard.writeText(code);
 
-    setCopied(true);
+  toast.success("Code copied successfully.");
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 2000);
+
+} catch {
+  toast.error("Failed to copy code.");
+}
 
     setTimeout(() => {
       setCopied(false);
@@ -59,7 +71,7 @@ export default function GeneratedComponent() {
     const a = document.createElement("a");
 
     a.href = url;
-    a.download = "AuraGenComponent.jsx";
+    a.download = `AuraGen-${Date.now()}.tsx`;
     a.click();
 
     URL.revokeObjectURL(url);
@@ -71,7 +83,11 @@ export default function GeneratedComponent() {
   ) {
     setGeneratedCode("");
   }
-};
+};const ok = window.confirm("Clear generated code?");
+
+if (!ok) return;
+
+setGeneratedCode("");
 
   useEffect(() => {
   const handler = (e: KeyboardEvent) => {
@@ -227,6 +243,9 @@ onChange={(value) => {
 
           <span className="text-sm text-slate-400">
             AI Workspace Ready
+            <p className="text-xs text-slate-500">
+Connected with Aura AI Generator
+</p>
           </span>
 
         </div>

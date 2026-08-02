@@ -34,14 +34,17 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
 
-    // TODO:
-    // Replace with Backend Reset Password API
+    // Backend Integration
+// await resetPassword(token, password);
 
     setTimeout(() => {
       setLoading(false);
       setSuccess(true);
 
       toast.success("Password reset successfully.");
+      setTimeout(() => {
+  window.location.href = "/login";
+}, 3000);
 
       setPassword("");
       setConfirmPassword("");
@@ -61,6 +64,11 @@ export default function ResetPasswordPage() {
             onSubmit={handleReset}
             className="space-y-5"
           >
+            <p className="text-xs text-slate-400">
+  Password must contain at least:
+  8 characters, one uppercase letter,
+  one lowercase letter and one number.
+</p>
             <PasswordInput
               label="New Password"
               placeholder="Enter new password"

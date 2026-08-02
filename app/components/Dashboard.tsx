@@ -1,7 +1,7 @@
 "use client";
 
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "./Navbar";
 import CommandPalette from "./CommandPalette";
@@ -21,17 +21,20 @@ import { useTelemetryContext } from "../context/TelemetryContext";
 
 export default function Dashboard() {
   const { telemetry } = useTelemetryContext();
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
     const socket = getSocket();
 
     socket.on("connect", () => {
-      console.log("✅ Aura Backend Connected");
-    });
+  console.log("✅ Aura Backend Connected");
+  setConnected(true);
+});
 
     socket.on("disconnect", () => {
-      console.log("❌ Aura Backend Disconnected");
-    });
+  console.log("❌ Aura Backend Disconnected");
+  setConnected(false);
+});
 
     return () => {
       socket.off("connect");
@@ -70,6 +73,19 @@ export default function Dashboard() {
       <WelcomeCard />
 
       <AIStatusCard />
+      <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-5">
+  <h2 className="text-lg font-bold">
+    Backend Connection
+  </h2>
+
+  <p
+    className={`mt-3 text-xl font-semibold ${
+      connected ? "text-green-400" : "text-red-400"
+    }`}
+  >
+    {connected ? "🟢 Connected" : "🔴 Disconnected"}
+  </p>
+</div>
 
       {/* KPI Cards */}
       <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
@@ -86,7 +102,7 @@ export default function Dashboard() {
           </p>
 
           <p className="mt-2 text-sm text-slate-400">
-            AI detected stress level
+            Real-time telemetry analysis
           </p>
         </div>
 
@@ -100,7 +116,7 @@ export default function Dashboard() {
           </p>
 
           <p className="mt-2 text-sm text-slate-400">
-            User concentration level
+            Calculated from cognitive metrics
           </p>
         </div>
 
@@ -114,7 +130,7 @@ export default function Dashboard() {
           </p>
 
           <p className="mt-2 text-sm text-slate-400">
-            Keyboard activity score
+            Typing activity based score
           </p>
         </div>
 
@@ -131,9 +147,19 @@ export default function Dashboard() {
 
   <div className="mb-6">
 
-    <h2 className="text-2xl font-bold text-cyan-300">
-      AI Workspace
-    </h2>
+    <div className="mb-6">
+  <p className="text-sm text-slate-500">
+    Live AI generation using telemetry-driven adaptive UI.
+  </p>
+
+  <h2 className="text-2xl font-bold text-cyan-300">
+    AI Workspace
+  </h2>
+
+  <p className="mt-1 text-slate-400">
+    Build, preview and refine adaptive interfaces with Aura AI.
+  </p>
+</div>
 
     <p className="mt-1 text-slate-400">
       Build, preview and refine adaptive interfaces with Aura AI.
