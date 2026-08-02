@@ -7,20 +7,39 @@ import { ArrowLeft } from "lucide-react";
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
+import toast from "react-hot-toast";
+import { isValidEmail } from "../utils/validators";
 
 export default function ForgotPasswordPage() {
-  const [sent, setSent] = useState(false);
+  const [email, setEmail] = useState("");
+const [sent, setSent] = useState(false);
+const [loading, setLoading] = useState(false);
+  const handleSubmit = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
 
-  const handleSubmit = (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+  if (!isValidEmail(email)) {
+    toast.error("Please enter a valid email address.");
+    return;
+  }
 
-    setSent(true);
-  };
+  setLoading(true);
 
-  return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">
+  // TODO: Replace this with backend API call
+  setTimeout(() => {
+    setLoading(false);
+setSent(true);
+
+toast.success("Reset link sent successfully.");
+
+// Clear input
+setEmail("");
+  }, 1200);
+};
+
+return (
+  <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">
 
       <AuthBackground />
 
@@ -37,18 +56,21 @@ export default function ForgotPasswordPage() {
           >
 
             <AuthInput
-              label="Email Address"
-              type="email"
-              placeholder="Enter your registered email"
-              required
-            />
+  label="Email Address"
+  type="email"
+  placeholder="Enter your registered email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+/>
 
             <button
-              type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 py-3 font-semibold text-white transition hover:opacity-90"
-            >
-              Send Reset Link
-            </button>
+  type="submit"
+  disabled={loading}
+  className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-500 py-3 font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  {loading ? "Sending..." : "Send Reset Link"}
+</button>
                       </form>
 
         ) : (
@@ -63,16 +85,25 @@ export default function ForgotPasswordPage() {
 
             <div>
 
-              <h3 className="text-2xl font-bold text-white">
-                Check Your Email
-              </h3>
+  <h3 className="text-2xl font-bold text-white">
+    Check Your Email
+  </h3>
 
-              <p className="mt-3 text-slate-400">
-                We've sent a password reset link to your registered email address.
-                Please check your inbox (and spam folder if needed).
-              </p>
+  <p className="mt-2 text-sm text-cyan-400">
+    {email}
+  </p>
 
-            </div>
+  <p className="mt-3 text-slate-400">
+    We've sent a password reset link to
+
+<span className="font-semibold text-white">
+  {email}
+</span>
+
+Please check your inbox and spam folder.
+  </p>
+
+</div>
 
           </div>
 

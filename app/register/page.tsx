@@ -5,14 +5,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import {
+  isValidEmail,
+  isStrongPassword,
+} from "../utils/validators";
 
-import { registerUser } from "../services/auth";
+import { loginUser, registerUser } from "../services/auth";
 import { useEffect } from "react";
 import AuthBackground from "../components/auth/AuthBackground";
 import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
-import { toast } from "react-hot-toast/headless";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -47,6 +51,22 @@ export default function RegisterPage() {
       return;
     }
 
+    if (name.trim().length < 3) {
+  toast.error("Name must be at least 3 characters.");
+  return;
+}
+
+if (!isValidEmail(email)) {
+  toast.error("Please enter a valid email address.");
+  return;
+}
+
+if (!isStrongPassword(password)) {
+  toast.error(
+    "Password must be at least 8 characters and include uppercase, lowercase, and a number."
+  );
+  return;
+}
     setLoading(true);
 
     try {
@@ -59,14 +79,22 @@ export default function RegisterPage() {
       console.log(res.data);
 
       toast.success("Registration Successful");
+      setName("");
+setEmail("");
+setPassword("");
+setConfirmPassword("");
+setAgree(false);
 
-      router.push("/login");
+
+toast.success("Registration Successful");
+
+router.push("/");
     } catch (err: any) {
       toast.error(
         err?.response?.data?.message ||
           "Registration Failed"
       );
-      console.error(err);
+      console.error("Registration Error:", err);
     }
 
     setLoading(false);
@@ -88,6 +116,7 @@ export default function RegisterPage() {
         >
 
           <AuthInput
+          maxLength={50}
             label="Full Name"
             placeholder="Enter your full name"
             value={name}
@@ -98,6 +127,7 @@ export default function RegisterPage() {
           />
 
           <AuthInput
+           autoComplete="email"
             label="Email Address"
             type="email"
             placeholder="Enter your email"
@@ -109,6 +139,7 @@ export default function RegisterPage() {
           />
 
           <PasswordInput
+          autoComplete="new-password"
             label="Password"
             placeholder="Create a password"
             value={password}
