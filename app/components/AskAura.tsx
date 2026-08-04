@@ -41,10 +41,21 @@ export default function AskAura() {
   hesitation: telemetry.hesitationTime,
   clicks: telemetry.clicks,
 });
+console.log("========== AI RESPONSE ==========");
+console.log(res);
+
+console.log("Generated JSX:");
+console.log(res.code);
+
+console.log("Explanation:");
+console.log(res.response);
+
+console.log("=================================");
 
       const jsx = res.code;
 
       setGeneratedCode(jsx);
+      console.log("✅ Generated code saved to AuraContext");
       console.log("Cognitive Load:", res.cognitiveLoad);
 console.log("Stress Level:", res.stressLevel);
 console.log("Focus Score:", res.focusScore);

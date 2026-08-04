@@ -67,11 +67,16 @@ export function AuraProvider({
     "👋 Welcome to AuraGen."
   );
 
-  const [generatedCode, setGeneratedCode] = useState(`// Start coding here...
+const [generatedCode, _setGeneratedCode] = useState("");
 
-function hello() {
-  console.log("Hello AuraGen!");
-}`);
+const setGeneratedCode = (value: string) => {
+  console.log("========== AuraContext ==========");
+  console.log("Saving Generated JSX:");
+  console.log(value);
+  console.log("=================================");
+
+  _setGeneratedCode(value);
+};
 
   const [aiStatus, setAiStatus] = useState("Ready");
 

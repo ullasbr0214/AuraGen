@@ -60,6 +60,13 @@ export default function LivePreviewPanel({
     Waiting for AI Generated Component...
   </div>
 )`;
+console.log("========== LIVE PREVIEW ==========");
+console.log(previewCode);
+console.log("==================================");
+
+const transformedCode = previewCode
+  .replace(/^export\s+default\s+/m, "")
+  .trim();
 
   return (
     <section className="rounded-2xl border border-cyan-500/10 bg-slate-900/70 p-5 shadow-2xl">
@@ -177,19 +184,32 @@ export default function LivePreviewPanel({
           }}
         >
           <LiveProvider
-  code={previewCode}
-  scope={{ React }}
+  code={transformedCode}
+  scope={{
+    React,
+    useState: React.useState,
+    useEffect: React.useEffect,
+    useMemo: React.useMemo,
+    useCallback: React.useCallback,
+    useRef: React.useRef,
+  }}
   noInline
 >
-
             <div className="min-h-[600px] p-6">
 
               <LivePreview />
 
             </div>
 
-            <LiveError className="border-t border-red-200 bg-red-50 p-4 text-sm text-red-600" />
+            <LiveError
+  className="border-t border-red-200 bg-red-50 p-4 text-sm text-red-600"
+/>
 
+{code && (
+  <div className="mt-3 text-xs text-slate-500">
+    If the preview fails, check whether the generated JSX contains unsupported syntax.
+  </div>
+)}
           </LiveProvider>
         </div>
 

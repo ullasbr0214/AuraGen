@@ -60,6 +60,9 @@ export default function DynamicRenderer() {
 };
 
   };
+  console.log("========== Dynamic Renderer ==========");
+console.log(generatedCode);
+console.log("======================================");
 
   return (
     <Card className="p-6">

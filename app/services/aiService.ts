@@ -43,37 +43,58 @@ export function generateAuraCode(
     }, 20000);
 
     function handleComponent(result: ComponentResult) {
-      console.log("✅ Component received:", result);
+  console.log("==================================");
+  console.log("✅ COMPONENT RECEIVED FROM BACKEND");
+  console.log(result);
 
-      clearTimeout(timeout);
+  console.log("JSX:");
+  console.log(result.jsx);
 
-      socket.off("component", handleComponent);
+  console.log("Explanation:");
+  console.log(result.explanation);
 
-      if (!result.success) {
-        reject(
-          new Error(
-            result.error || "Backend failed to generate UI."
-          )
-        );
-        return;
-      }
+  console.log("Cognitive Load:", result.cognitiveLoad);
+  console.log("Stress:", result.stressLevel);
+  console.log("Focus:", result.focusScore);
 
-      resolve({
-  response:
-    result.explanation ||
-    "✅ Aura successfully generated the component.",
+  console.log("==================================");
 
-  code: result.jsx || "",
+  clearTimeout(timeout);
 
-  cognitiveLoad: result.cognitiveLoad ?? 0,
-  stressLevel: result.stressLevel ?? "Unknown",
-  focusScore: result.focusScore ?? 0,
-});
+  socket.off("component", handleComponent);
+
+  if (!result.success) {
+    reject(
+      new Error(
+        result.error || "Backend failed to generate UI."
+      )
+    );
+    return;
+  }
+
+  resolve({
+    response:
+      result.explanation ||
+      "✅ Aura successfully generated the component.",
+
+    code: result.jsx || "",
+
+    cognitiveLoad: result.cognitiveLoad ?? 0,
+    stressLevel: result.stressLevel ?? "Unknown",
+    focusScore: result.focusScore ?? 0,
+  });
 }
 
     socket.on("component", handleComponent);
 
-    console.log("📤 Sending telemetry to backend...");
+    console.log("==================================");
+console.log("📤 SENDING TELEMETRY");
+console.log({
+  prompt,
+  hesitation: telemetry?.hesitation ?? 3,
+  clicks: telemetry?.clicks ?? 5,
+});
+console.log("==================================");
 
     console.log({
       prompt,
