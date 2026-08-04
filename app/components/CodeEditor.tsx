@@ -83,11 +83,7 @@ export default function GeneratedComponent() {
   ) {
     setGeneratedCode("");
   }
-};const ok = window.confirm("Clear generated code?");
-
-if (!ok) return;
-
-setGeneratedCode("");
+};
 
   useEffect(() => {
   const handler = (e: KeyboardEvent) => {

@@ -1,19 +1,12 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_URL) {
-  throw new Error(
-    "NEXT_PUBLIC_API_URL=https://cover-patriot-overhand.ngrok-free.dev/api"
-  );
-}
-
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true",
   },
-  timeout: 15000,
 });
 
 export default api;

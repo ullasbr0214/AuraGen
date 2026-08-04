@@ -39,14 +39,13 @@ export default function DynamicRenderer() {
   return;
 }
 
-    try {
+   try {
   await navigator.clipboard.writeText(code);
   toast.success("JSX copied successfully.");
 } catch {
   toast.error("Failed to copy JSX.");
 }
-
-    toast.success("JSX copied successfully.");const copyCode = async (code: string) => {
+    const copyCode = async (code: string) => {
   if (!code) {
     toast.error("No JSX code available.");
     return;
