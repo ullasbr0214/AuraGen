@@ -34,18 +34,6 @@ export default function DynamicRenderer() {
 };
 
   const copyCode = async (code: string) => {
-    if (!code) {
-  toast.error("No JSX code available.");
-  return;
-}
-
-   try {
-  await navigator.clipboard.writeText(code);
-  toast.success("JSX copied successfully.");
-} catch {
-  toast.error("Failed to copy JSX.");
-}
-    const copyCode = async (code: string) => {
   if (!code) {
     toast.error("No JSX code available.");
     return;
@@ -58,8 +46,6 @@ export default function DynamicRenderer() {
     toast.error("Failed to copy JSX.");
   }
 };
-
-  };
   console.log("========== Dynamic Renderer ==========");
 console.log(generatedCode);
 console.log("======================================");

@@ -14,12 +14,15 @@ export default function AskAura() {
   const { addMessage } = useChat();
   const { telemetry } = useTelemetryContext();
   
-  const {
-    setPrompt: setAuraPrompt,
-    setGeneratedCode,
-    setAiStatus,
-    addGeneratedComponent,
-  } = useAura();
+ const {
+  setPrompt: setAuraPrompt,
+  setGeneratedCode,
+  setAiStatus,
+  setCognitiveLoad,
+  setStressLevel,
+  setFocusScore,
+  addGeneratedComponent,
+} = useAura();
 
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,8 +58,13 @@ console.log("=================================");
       const jsx = res.code;
 
       setGeneratedCode(jsx);
-      console.log("✅ Generated code saved to AuraContext");
-      console.log("Cognitive Load:", res.cognitiveLoad);
+
+setCognitiveLoad(res.cognitiveLoad);
+setStressLevel(res.stressLevel);
+setFocusScore(res.focusScore);
+
+console.log("✅ Generated code saved to AuraContext");
+console.log("Cognitive Load:", res.cognitiveLoad);
 console.log("Stress Level:", res.stressLevel);
 console.log("Focus Score:", res.focusScore);
 

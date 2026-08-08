@@ -3,15 +3,12 @@
 import { useEffect } from "react";
 import TelemetryCard from "./TelemetryCard";
 import { useTelemetryContext } from "../context/TelemetryContext";
-import { getSocket } from "../services/socket";
+
 
 export default function TelemetryTracker() {
   const { telemetry, setTelemetry } = useTelemetryContext();
 
-  // Initialize socket once
-  useEffect(() => {
-    getSocket();
-  }, []);
+
 
   // Mouse Movement
   useEffect(() => {
@@ -134,28 +131,9 @@ export default function TelemetryTracker() {
     return () => clearInterval(timer);
   }, [setTelemetry]);
 
+  
   // Send telemetry to backend every second
-  // Send telemetry to backend every second
-useEffect(() => {
-  const socket = getSocket();
 
-  const interval = setInterval(() => {
-    socket.emit("telemetry", {
-      mouseX: telemetry.mouseX,
-      mouseY: telemetry.mouseY,
-      velocity: telemetry.velocity,
-      clicks: telemetry.clicks,
-      rapidClicks: telemetry.rapidClicks,
-      hesitation: telemetry.hesitationTime,
-      scrollCount: telemetry.scrollCount,
-      keyPresses: telemetry.keyPresses,
-      prompt: "Adaptive Dashboard",
-    });
-  }, 1000);
-
-  return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
 
   return (
     <TelemetryCard
