@@ -3,109 +3,232 @@
 import { getSocket } from "./socket";
 
 type ComponentResult = {
-  success: boolean;
+  success?: boolean;
   jsx?: string;
   explanation?: string;
-
   cognitiveLoad?: number;
-  stressLevel?: string;
+  stressLevel?: string | number;
   focusScore?: number;
-
   error?: string;
 };
 
-type AuraCodeResult = {
+export type AuraCodeResult = {
   response: string;
   code: string;
-
   cognitiveLoad: number;
   stressLevel: string;
   focusScore: number;
 };
+
+type TelemetryData = {
+  hesitation: number;
+  clicks: number;
+};
+
 export function generateAuraCode(
   prompt: string,
-  telemetry?: {
-    hesitation: number;
-    clicks: number;
-  }
+  telemetry?: TelemetryData
 ): Promise<AuraCodeResult> {
   const socket = getSocket();
 
   return new Promise((resolve, reject) => {
+    console.log("================================");
+    console.log("🤖 AURA AI GENERATION");
+    console.log("Prompt:", prompt);
+    console.log("Socket connected:", socket.connected);
+    console.log("Socket ID:", socket.id);
+    console.log("================================");
+
+    let completed = false;
+
     const timeout = setTimeout(() => {
-      socket.off("component", handleComponent);
+      if (completed) return;
+
+      completed = true;
+      cleanup();
+
+      console.error(
+        "❌ AI GENERATION TIMEOUT"
+      );
 
       reject(
         new Error(
-          "Timeout: Backend did not respond within 20 seconds."
+          "Backend/AI pipeline did not respond within 20 seconds."
         )
       );
     }, 20000);
 
-    function handleComponent(result: ComponentResult) {
-  console.log("==================================");
-  console.log("✅ COMPONENT RECEIVED FROM BACKEND");
-  console.log(result);
+    const cleanup = () => {
+      socket.off(
+        "component_response",
+        handleComponentResponse
+      );
 
-  console.log("JSX:");
-  console.log(result.jsx);
+      socket.off(
+        "connect_error",
+        handleConnectionError
+      );
 
-  console.log("Explanation:");
-  console.log(result.explanation);
+      socket.off(
+        "connect",
+        handleConnect
+      );
+    };
 
-  console.log("Cognitive Load:", result.cognitiveLoad);
-  console.log("Stress:", result.stressLevel);
-  console.log("Focus:", result.focusScore);
+    function handleComponentResponse(
+      result: ComponentResult
+    ) {
+      if (completed) return;
 
-  console.log("==================================");
+      console.log("================================");
+      console.log("📦 COMPONENT_RESPONSE RECEIVED");
+      console.log("================================");
 
-  clearTimeout(timeout);
+      console.log("Raw response:", result);
 
-  socket.off("component", handleComponent);
+      if (result.success === false) {
+        completed = true;
+        clearTimeout(timeout);
+        cleanup();
 
-  if (!result.success) {
-    reject(
-      new Error(
-        result.error || "Backend failed to generate UI."
-      )
+        reject(
+          new Error(
+            result.error ||
+              result.explanation ||
+              "AI failed to generate UI."
+          )
+        );
+
+        return;
+      }
+
+      if (!result.jsx) {
+        completed = true;
+        clearTimeout(timeout);
+        cleanup();
+
+        reject(
+          new Error(
+            "Backend responded, but no JSX was returned."
+          )
+        );
+
+        return;
+      }
+
+      completed = true;
+      clearTimeout(timeout);
+      cleanup();
+
+      console.log("================================");
+      console.log("✅ JSX RECEIVED SUCCESSFULLY");
+      console.log("================================");
+
+      console.log("JSX:", result.jsx);
+      console.log(
+        "Cognitive Load:",
+        result.cognitiveLoad
+      );
+      console.log(
+        "Stress:",
+        result.stressLevel
+      );
+      console.log(
+        "Focus:",
+        result.focusScore
+      );
+
+      resolve({
+        response:
+          result.explanation ||
+          "Aura successfully generated the UI.",
+
+        code: result.jsx,
+
+        cognitiveLoad:
+          result.cognitiveLoad ?? 0,
+
+        stressLevel:
+          String(
+            result.stressLevel ?? "Unknown"
+          ),
+
+        focusScore:
+          result.focusScore ?? 0,
+      });
+    }
+
+    function handleConnectionError(
+      error: Error
+    ) {
+      console.error(
+        "❌ SOCKET CONNECTION ERROR:",
+        error.message
+      );
+    }
+
+    function sendGenerationRequest() {
+      const requestData = {
+        prompt,
+
+        hesitation:
+          telemetry?.hesitation ?? 0,
+
+        clicks:
+          telemetry?.clicks ?? 0,
+      };
+
+      console.log("================================");
+      console.log(
+        "📤 SENDING GENERATE_COMPONENT"
+      );
+      console.log("================================");
+
+      console.log(requestData);
+
+      socket.emit(
+        "generate_component",
+        requestData
+      );
+    }
+
+    function handleConnect() {
+      console.log("================================");
+      console.log("✅ SOCKET CONNECTED");
+      console.log("Socket ID:", socket.id);
+      console.log("================================");
+
+      sendGenerationRequest();
+    }
+
+    // Listen BEFORE sending request
+    socket.on(
+      "component_response",
+      handleComponentResponse
     );
-    return;
-  }
 
-  resolve({
-    response:
-      result.explanation ||
-      "✅ Aura successfully generated the component.",
+    socket.on(
+      "connect_error",
+      handleConnectionError
+    );
 
-    code: result.jsx || "",
+    if (socket.connected) {
+      console.log(
+        "✅ Socket already connected."
+      );
 
-    cognitiveLoad: result.cognitiveLoad ?? 0,
-    stressLevel: result.stressLevel ?? "Unknown",
-    focusScore: result.focusScore ?? 0,
-  });
-}
+      sendGenerationRequest();
+    } else {
+      console.log(
+        "⏳ Waiting for socket connection..."
+      );
 
-    socket.on("component", handleComponent);
+      socket.once(
+        "connect",
+        handleConnect
+      );
 
-    console.log("==================================");
-console.log("📤 SENDING TELEMETRY");
-console.log({
-  prompt,
-  hesitation: telemetry?.hesitation ?? 3,
-  clicks: telemetry?.clicks ?? 5,
-});
-console.log("==================================");
-
-    console.log({
-      prompt,
-      hesitation: telemetry?.hesitation ?? 3,
-      clicks: telemetry?.clicks ?? 5,
-    });
-
-    socket.emit("telemetry", {
-      prompt,
-      hesitation: telemetry?.hesitation ?? 3,
-      clicks: telemetry?.clicks ?? 5,
-    });
+      socket.connect();
+    }
   });
 }

@@ -1,11 +1,13 @@
 import axios from "axios";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 15000,
+  baseURL: API_URL,
+  timeout: 20000,
   headers: {
     "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true",
   },
 });
 

@@ -1,36 +1,38 @@
-import { io } from "socket.io-client";
+"use client";
+
+import { io, Socket } from "socket.io-client";
 
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_SOCKET_URL ||
   "https://cover-patriot-overhand.ngrok-free.dev";
 
-const socket = io(SOCKET_URL, {
-  transports: ["websocket", "polling"],
+export const socket: Socket = io(SOCKET_URL, {
+  path: "/socket.io",
+  transports: ["polling"],
   autoConnect: true,
   reconnection: true,
-  reconnectionAttempts: 5,
+  reconnectionAttempts: 10,
   reconnectionDelay: 1000,
   timeout: 20000,
-  extraHeaders: {
-    "ngrok-skip-browser-warning": "true",
-  },
 });
 
 socket.on("connect", () => {
-  console.log("✅ Connected to AuraGen Backend");
+  console.log("✅ SOCKET CONNECTED");
+  console.log("Socket ID:", socket.id);
 });
 
 socket.on("disconnect", (reason) => {
-  console.log("❌ Disconnected:", reason);
+  console.log("❌ SOCKET DISCONNECTED:", reason);
 });
 
-socket.on("connect_error", (err) => {
-  console.error("❌ Connection Error:", err.message);
+socket.on("connect_error", (error) => {
+  console.error("❌ SOCKET CONNECTION ERROR:", error.message);
 });
 
-// ✅ Add this function
+socket.on("component_response", (data) => {
+  console.log("📦 COMPONENT_RESPONSE RECEIVED:", data);
+});
+
 export function getSocket() {
   return socket;
 }
-
-export { socket };
