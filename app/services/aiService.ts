@@ -186,10 +186,11 @@ export function generateAuraCode(
 
       console.log(requestData);
 
-      socket.emit(
-        "generate_component",
-        requestData
-      );
+      socket.emit("generate_component", {
+  prompt,
+  hesitation: telemetry?.hesitation ?? 0,
+  clicks: telemetry?.clicks ?? 0,
+});
     }
 
     function handleConnect() {
