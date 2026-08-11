@@ -297,17 +297,13 @@ render(<GeneratedComponent />);
           <LiveProvider
             code={previewCode}
             scope={{
-              React,
-
-              useState: React.useState,
-              useEffect: React.useEffect,
-              useMemo: React.useMemo,
-              useCallback: React.useCallback,
-              useRef: React.useRef,
-
-              // Required by react-live noInline mode.
-              render: (element: React.ReactElement) => element,
-            }}
+  React,
+  useState: React.useState,
+  useEffect: React.useEffect,
+  useMemo: React.useMemo,
+  useCallback: React.useCallback,
+  useRef: React.useRef,
+}}
             noInline
           >
 
