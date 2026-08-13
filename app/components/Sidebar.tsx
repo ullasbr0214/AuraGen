@@ -17,6 +17,7 @@ import {
   LogOut,
 } from "lucide-react";
 
+import { useAuth } from "../context/AuthContext";
 
 interface MenuItem {
   title: string;
@@ -66,6 +67,7 @@ export default function Sidebar() {
     useState("Workspace");
 
     const router = useRouter();
+    const { user, logout } = useAuth();
 
   useEffect(() => {
     const saved = localStorage.getItem(
@@ -85,19 +87,15 @@ export default function Sidebar() {
   }, [collapsed]);
 
  const handleLogout = () => {
-  localStorage.removeItem("token");
-
+  logout();
   toast.success("Logged out successfully");
-
-  setTimeout(() => {
-    router.replace("/login");
-  }, 800);
+  router.replace("/login");
 };
 
   return (
     <aside
       className={`${
-        collapsed ? "w-20" : "w-72"
+        collapsed ? "w-20" : "w-64"
       } min-h-screen border-r border-cyan-500/10 bg-slate-900/70 backdrop-blur-xl transition-all duration-300`}
     >
 
@@ -190,9 +188,23 @@ export default function Sidebar() {
 
             <button
               key={item.title}
-              onClick={() =>
-                setActiveMenu(item.title)
-              }
+              onClick={() => {
+                setActiveMenu(item.title);
+                const targets: Record<string, string> = {
+                  Dashboard: "dashboard",
+                  Workspace: "workspace",
+                  "AI Assistant": "ai-assistant",
+                  Telemetry: "telemetry",
+                  Analytics: "analytics",
+                  "Cognitive Engine": "cognitive-engine",
+                };
+                if (item.title === "Settings") {
+                  router.push("/profile");
+                  return;
+                }
+                const target = document.getElementById(targets[item.title]);
+                target?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
               title={collapsed ? item.title : ""}
               className={`group relative mb-3 flex w-full items-center ${
                 collapsed
@@ -243,7 +255,7 @@ export default function Sidebar() {
               <div>
 
                 <p className="font-semibold text-white">
-                  Ullas B R
+                  {user?.name || user?.username || "AuraGen User"}
                 </p>
 
                 <p className="text-sm text-green-400">

@@ -100,9 +100,10 @@ setPrompt("");
       toast.dismiss(loadingToast);
 
 toast.error(
-  err?.response?.data?.message ||
-  "Unable to connect to backend."
-);
+        err?.message ||
+        err?.response?.data?.message ||
+        "Unable to connect to backend."
+      );
 
     } finally {
 
@@ -113,7 +114,7 @@ setLoading(false);
     }
   };
     return (
-    <section className="rounded-3xl border border-cyan-500/10 bg-slate-900/70 p-6 shadow-2xl">
+    <section className="rounded-2xl border border-cyan-500/10 bg-slate-900/70 p-5 shadow-xl">
 
       <div className="flex items-center gap-3">
 
@@ -130,11 +131,11 @@ setLoading(false);
       </p>
 
       <textarea
-        rows={6}
+        rows={5}
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="Example: Build a modern analytics dashboard with charts and dark theme..."
-        className="mt-5 w-full rounded-2xl border border-slate-700 bg-slate-950 p-4 text-white outline-none focus:border-cyan-500"
+        className="mt-4 w-full rounded-xl border border-slate-700 bg-slate-950 p-4 text-white outline-none focus:border-cyan-500"
       />
 
       <button

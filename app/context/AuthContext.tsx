@@ -19,7 +19,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
 
-  login: (token: string, user?: User) => void;
+  login: (token: string, user?: User, remember?: boolean) => void;
   logout: () => void;
 
   isAuthenticated: boolean;
@@ -41,9 +41,11 @@ export function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken =
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
 
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user") || sessionStorage.getItem("user");
 
     if (storedToken) {
       setToken(storedToken);
@@ -56,25 +58,32 @@ export function AuthProvider({
     setLoading(false);
   }, []);
 
-  const login = (newToken: string, newUser?: User) => {
-    localStorage.setItem("token", newToken);
+  const login = (
+    newToken: string,
+    newUser?: User,
+    remember = true
+  ) => {
+    const storage = remember ? localStorage : sessionStorage;
+    const otherStorage = remember ? sessionStorage : localStorage;
 
-    setToken(newToken);
+    otherStorage.removeItem("token");
+    otherStorage.removeItem("user");
+    storage.setItem("token", newToken);
 
     if (newUser) {
-      localStorage.setItem(
-        "user",
-        JSON.stringify(newUser)
-      );
-
-      setUser(newUser);
+      storage.setItem("user", JSON.stringify(newUser));
     }
+
+    setToken(newToken);
+    setUser(newUser ?? null);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
 
     localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
 
     setUser(null);
 

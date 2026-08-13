@@ -15,51 +15,128 @@ import DynamicRenderer from "./DynamicRenderer";
 import ErrorBoundary from "./ErrorBoundary";
 import CognitiveGauge from "./CognitiveGauge";
 import Footer from "./Footer";
-
+import SelfHealingEngine from "./SelfHealingEngine";
+import useTelemetry from "../hooks/useTelemetry";
+import useAdaptiveLayout from "../hooks/useAdaptiveLayout";
 import { getSocket } from "../services/socket";
 import { useTelemetryContext } from "../context/TelemetryContext";
 
 export default function Dashboard() {
   const { telemetry } = useTelemetryContext();
+  const {
+  cognitiveLoad,
+  focusLevel,
+  productivity,
+  recommendation,
+} = useTelemetry();
+const layoutMode = useAdaptiveLayout(cognitiveLoad);
   const [connected, setConnected] = useState(false);
+const [backendDatabase, setBackendDatabase] = useState<string>("Checking...");
 
   useEffect(() => {
-    const socket = getSocket();
+  const socket = getSocket();
 
-    socket.on("connect", () => {
-  console.log("✅ Aura Backend Connected");
-  setConnected(true);
-});
+  // -----------------------------
+  // Socket.IO connection
+  // -----------------------------
 
-    socket.on("disconnect", () => {
-  console.log("❌ Aura Backend Disconnected");
-  setConnected(false);
-});
+  const handleSocketConnect = () => {
+    console.log("✅ Aura Socket Connected");
+  };
 
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-    };
-  }, []);
+  const handleSocketDisconnect = () => {
+    console.log("❌ Aura Socket Disconnected");
+  };
 
-  const cognitiveLoad = Math.min(
-    100,
-    Math.round(
-      telemetry.clicks * 3 +
-        telemetry.rapidClicks * 5 +
-        telemetry.hesitationTime / 10 +
-        telemetry.velocity / 8
-    )
+  socket.on("connect", handleSocketConnect);
+  socket.on("disconnect", handleSocketDisconnect);
+
+  if (!socket.connected) {
+    socket.connect();
+  }
+
+  // -----------------------------
+  // Backend health check
+  // -----------------------------
+
+  const checkBackendHealth = async () => {
+    try {
+      const apiBase =
+        process.env.NEXT_PUBLIC_API_URL ||
+        "http://localhost:5000/api";
+
+      const response = await fetch(`${apiBase}/health`, {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Backend returned ${response.status}`
+        );
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.status === "ok") {
+        console.log("✅ Backend API Connected");
+
+        setConnected(true);
+
+        setBackendDatabase(
+          data.database === "connected"
+            ? "MongoDB Connected"
+            : "MongoDB Disconnected"
+        );
+      } else {
+        throw new Error("Backend health check failed");
+      }
+    } catch (error) {
+      console.error(
+        "❌ Backend health check failed:",
+        error
+      );
+
+      setConnected(false);
+      setBackendDatabase("API Unreachable");
+    }
+  };
+
+  // Check immediately
+  checkBackendHealth();
+
+  // Check every 10 seconds
+  const healthInterval = window.setInterval(
+    checkBackendHealth,
+    10000
   );
 
+  return () => {
+    socket.off("connect", handleSocketConnect);
+    socket.off("disconnect", handleSocketDisconnect);
+
+    window.clearInterval(healthInterval);
+  };
+}, []);
+
   return (
-    <div className="min-h-screen bg-transparent p-8 text-white">
+    <div
+  id="dashboard"
+  data-layout-mode={layoutMode}
+  className={`min-h-screen min-w-0 bg-transparent text-white transition-all duration-500 ${
+    layoutMode === "simplified"
+      ? "p-3 sm:p-4"
+      : layoutMode === "focus"
+      ? "p-4 sm:p-5 lg:p-6"
+      : "p-4 sm:p-6 lg:p-8"
+  }`}
+>
 
       <Navbar />
       <CommandPalette />
 
       {/* Dashboard Header */}
-      <div className="mt-6 mb-8 rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 p-6">
+      <div id="analytics" className="mt-6 mb-8 rounded-2xl border border-cyan-500/10 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 p-6">
         <h1 className="text-4xl font-bold">
           AuraGen Dashboard
         </h1>
@@ -73,77 +150,205 @@ export default function Dashboard() {
       <WelcomeCard />
 
       <AIStatusCard />
-      <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-5">
-  <h2 className="text-lg font-bold">
-    Backend Connection
-  </h2>
+      <div
+  className={`mt-6 rounded-2xl border p-5 transition-all duration-500 ${
+    layoutMode === "simplified"
+      ? "border-red-500/30 bg-red-500/5"
+      : layoutMode === "focus"
+      ? "border-yellow-500/30 bg-yellow-500/5"
+      : "border-green-500/20 bg-green-500/5"
+  }`}
+>
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-  <p
-    className={`mt-3 text-xl font-semibold ${
-      connected ? "text-green-400" : "text-red-400"
-    }`}
-  >
-    {connected ? "🟢 Connected" : "🔴 Disconnected"}
-  </p>
+    <div>
+      <p className="text-xs uppercase tracking-wider text-slate-500">
+        Self-Healing Engine
+      </p>
+
+      <h3 className="mt-1 text-lg font-bold text-white">
+        {layoutMode === "simplified"
+          ? "Simplified Mode Activated"
+          : layoutMode === "focus"
+          ? "Focus Mode Activated"
+          : "Normal Mode"}
+      </h3>
+
+      <p className="mt-1 text-sm text-slate-400">
+        {recommendation}
+      </p>
+    </div>
+
+    <div
+      className={`w-fit rounded-full px-4 py-2 text-sm font-semibold ${
+        layoutMode === "simplified"
+          ? "bg-red-500/10 text-red-300"
+          : layoutMode === "focus"
+          ? "bg-yellow-500/10 text-yellow-300"
+          : "bg-green-500/10 text-green-300"
+      }`}
+    >
+      Cognitive Load: {cognitiveLoad}%
+    </div>
+
+  </div>
+</div>
+      <div className="mt-6 rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-5">
+
+  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+    <div>
+      <h2 className="text-lg font-bold text-white">
+        Backend Connection
+      </h2>
+
+      <p className="mt-1 text-sm text-slate-400">
+        Real-time AuraGen backend health
+      </p>
+    </div>
+
+    <div
+      className={`flex items-center gap-2 text-xl font-semibold ${
+        connected
+          ? "text-green-400"
+          : "text-red-400"
+      }`}
+    >
+      <span
+        className={`h-3 w-3 rounded-full ${
+          connected
+            ? "bg-green-400 shadow-[0_0_12px_rgba(74,222,128,0.8)]"
+            : "bg-red-400 shadow-[0_0_12px_rgba(248,113,113,0.8)]"
+        }`}
+      />
+
+      {connected
+        ? "Connected"
+        : "Disconnected"}
+    </div>
+
+  </div>
+
+  <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+    <div className="rounded-xl border border-slate-700 bg-slate-950/50 p-3">
+
+      <p className="text-xs uppercase tracking-wider text-slate-500">
+        API
+      </p>
+
+      <p
+        className={`mt-1 text-sm font-semibold ${
+          connected
+            ? "text-green-400"
+            : "text-red-400"
+        }`}
+      >
+        {connected
+          ? "Healthy"
+          : "Unreachable"}
+      </p>
+
+    </div>
+
+    <div className="rounded-xl border border-slate-700 bg-slate-950/50 p-3">
+
+      <p className="text-xs uppercase tracking-wider text-slate-500">
+        Database
+      </p>
+
+      <p
+        className={`mt-1 text-sm font-semibold ${
+          backendDatabase === "MongoDB Connected"
+            ? "text-green-400"
+            : "text-yellow-400"
+        }`}
+      >
+        {backendDatabase}
+      </p>
+
+    </div>
+
+  </div>
+
 </div>
 
       {/* KPI Cards */}
-      <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
+{layoutMode !== "simplified" && (
+  <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
 
-        <CognitiveGauge />
+    <CognitiveGauge />
 
-        <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6">
-          <h2 className="font-bold text-lg">
-            Stress Meter
-          </h2>
+    <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-6">
+      <h2 className="text-lg font-bold">
+        Stress Meter
+      </h2>
 
-          <p className="mt-3 text-3xl font-bold text-cyan-400">
-            {Math.min(100, cognitiveLoad)}%
-          </p>
+      <p className="mt-3 text-3xl font-bold text-cyan-400">
+        {Math.min(100, cognitiveLoad)}%
+      </p>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Real-time telemetry analysis
-          </p>
-        </div>
+      <p className="mt-2 text-sm text-slate-400">
+        Real-time telemetry analysis
+      </p>
+    </div>
 
-        <div className="rounded-2xl border border-green-500/20 bg-slate-900/60 p-6">
-          <h2 className="font-bold text-lg">
-            Focus Score
-          </h2>
+    <div className="rounded-2xl border border-green-500/20 bg-slate-900/60 p-6">
+      <h2 className="text-lg font-bold">
+        Focus Score
+      </h2>
 
-          <p className="mt-3 text-3xl font-bold text-green-400">
-            {100 - Math.min(100, cognitiveLoad)}%
-          </p>
+      <p className="mt-3 text-3xl font-bold text-green-400">
+        {focusLevel}%
+      </p>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Calculated from cognitive metrics
-          </p>
-        </div>
+      <p className="mt-2 text-sm text-slate-400">
+        Calculated from cognitive metrics
+      </p>
+    </div>
 
-        <div className="rounded-2xl border border-yellow-500/20 bg-slate-900/60 p-6">
-          <h2 className="font-bold text-lg">
-            Productivity
-          </h2>
+    <div className="rounded-2xl border border-yellow-500/20 bg-slate-900/60 p-6">
+      <h2 className="text-lg font-bold">
+        Productivity
+      </h2>
 
-          <p className="mt-3 text-3xl font-bold text-yellow-400">
-            {Math.min(100, telemetry.keyPresses)}%
-          </p>
+      <p className="mt-3 text-3xl font-bold text-yellow-400">
+        {Math.round(productivity)}%
+      </p>
 
-          <p className="mt-2 text-sm text-slate-400">
-            Typing activity based score
-          </p>
-        </div>
+      <p className="mt-2 text-sm text-slate-400">
+        Typing activity based score
+      </p>
+    </div>
 
-      </section>
+    </section>
+)}
 
-            {/* Telemetry */}
-      <div className="mt-8">
-        <TelemetryTracker />
-      </div>
+{/* ===================== Telemetry ===================== */}
 
-      {/* ===================== AI Workspace ===================== */}
+<div
+  id="telemetry"
+  className={`mt-8 transition-all duration-500 ${
+    layoutMode === "simplified"
+      ? "hidden"
+      : "block"
+  }`}
+>
+  <TelemetryTracker />
+</div>
 
-<section className="mt-8 rounded-3xl border border-cyan-500/20 bg-slate-900/40 p-6 shadow-2xl backdrop-blur-xl">
+{/* ===================== AI Workspace ===================== */}
+
+<section
+  id="workspace"
+  className={`mt-8 min-w-0 overflow-hidden rounded-3xl border bg-slate-900/40 shadow-2xl backdrop-blur-xl transition-all duration-500 ${
+    layoutMode === "simplified"
+      ? "border-cyan-400/40 p-3 shadow-cyan-500/10 sm:p-4"
+      : layoutMode === "focus"
+      ? "border-cyan-500/30 p-4 sm:p-5"
+      : "border-cyan-500/20 p-4 sm:p-6"
+  }`}
+>
 
   <div className="mb-6">
 
@@ -167,41 +372,50 @@ export default function Dashboard() {
 
   </div>
 
-  <div className="grid gap-6 lg:grid-cols-[320px_1fr_520px] items-start">
+  <div className="grid min-w-0 gap-6 xl:grid-cols-[280px_minmax(0,1fr)] items-start">
 
-    {/* Left */}
-    <div className="space-y-6">
+  {/* AI CONTROLS */}
+  <div id="ai-assistant" className="min-w-0 space-y-6">
+    <HistoryPanel />
+    <AskAura />
+  </div>
 
-      <HistoryPanel />
+  {/* CODE + PREVIEW */}
+  <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
 
-      <AskAura />
-
-      {/* Uncomment if you want full chat */}
-      {/* <ChatPanel /> */}
-
-    </div>
-
-    {/* Center */}
-    <div className="rounded-2xl border border-cyan-500/10 bg-slate-950/40 p-4 min-h-[750px]">
-
+    {/* CODE */}
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-cyan-500/10 bg-slate-950/50">
       <CodeEditor />
-
     </div>
 
-    {/* Right */}
-    <div className="rounded-2xl border border-violet-500/10 bg-slate-950/40 p-4 min-h-[750px]">
-
+    {/* PREVIEW */}
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-violet-500/10 bg-slate-950/50">
       <ErrorBoundary>
-
         <DynamicRenderer />
-
       </ErrorBoundary>
-
     </div>
 
   </div>
 
+</div>
+
 </section>
+{/* Cognitive engine */}
+<div
+  id="cognitive-engine"
+  className={`mt-8 transition-all duration-500 ${
+    layoutMode === "simplified"
+      ? "ring-1 ring-red-500/20"
+      : layoutMode === "focus"
+      ? "ring-1 ring-yellow-500/20"
+      : ""
+  }`}
+>
+  <SelfHealingEngine
+    cognitiveLoad={cognitiveLoad}
+  />
+</div>
+
 {/* Footer */}
 <div className="mt-8">
   <Footer />

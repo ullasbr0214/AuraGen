@@ -17,9 +17,11 @@ import AuthCard from "../components/auth/AuthCard";
 import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
 import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   const [agree, setAgree] = useState(false);
 
@@ -31,14 +33,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  const token =
-  localStorage.getItem("token") ||
-  sessionStorage.getItem("token");
-
-  if (token) {
+  if (!authLoading && isAuthenticated) {
     router.replace("/");
   }
-}, [router]);
+}, [authLoading, isAuthenticated, router]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

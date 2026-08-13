@@ -18,47 +18,48 @@ import toast from "react-hot-toast";
 
 export default function CodeEditor() {
   const {
-  generatedCode,
-  setGeneratedCode,
-  aiStatus,
-} = useAura();
+    generatedCode,
+    setGeneratedCode,
+    aiStatus,
+  } = useAura();
 
   const [copied, setCopied] = useState(false);
-
-   const [saved, setSaved] = useState(true);
+  const [saved, setSaved] = useState(true);
 
   const code =
-  generatedCode.length > 0
-    ? generatedCode
-    : `// AuraGen AI Ready
+    generatedCode && generatedCode.trim().length > 0
+      ? generatedCode
+      : `// AuraGen AI Ready
 
 export default function GeneratedComponent() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <h1>Hello AuraGen 🚀</h1>
+    <div className="flex items-center justify-center min-h-screen bg-slate-950 text-white">
+      <h1 className="text-2xl font-bold">
+        Hello AuraGen 🚀
+      </h1>
     </div>
   );
 }`;
+
+  /* ---------------- COPY ---------------- */
+
   const copyCode = async () => {
     try {
-  await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(code);
 
-  toast.success("Code copied successfully.");
+      toast.success("Code copied successfully.");
 
-  setCopied(true);
+      setCopied(true);
 
-  setTimeout(() => {
-    setCopied(false);
-  }, 2000);
-
-} catch {
-  toast.error("Failed to copy code.");
-}
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch {
+      toast.error("Failed to copy code.");
+    }
   };
+
+  /* ---------------- DOWNLOAD ---------------- */
 
   const downloadCode = () => {
     const blob = new Blob([code], {
@@ -67,199 +68,315 @@ export default function GeneratedComponent() {
 
     const url = URL.createObjectURL(blob);
 
-
     const a = document.createElement("a");
 
     a.href = url;
     a.download = `AuraGen-${Date.now()}.tsx`;
+
+    document.body.appendChild(a);
     a.click();
+    a.remove();
 
     URL.revokeObjectURL(url);
+
+    toast.success("TSX file downloaded.");
   };
+
+  /* ---------------- CLEAR ---------------- */
 
   const clearCode = () => {
-  if (
-    confirm("Clear generated code?")
-  ) {
+    if (!confirm("Clear generated code?")) {
+      return;
+    }
+
     setGeneratedCode("");
-  }
-};
+    setSaved(true);
+
+    toast.success("Code cleared.");
+  };
+
+  /* ---------------- SAVE SHORTCUT ---------------- */
 
   useEffect(() => {
-  const handler = (e: KeyboardEvent) => {
-    if (e.ctrlKey && e.key.toLowerCase() === "s") {
-      e.preventDefault();
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key.toLowerCase() === "s") {
+        e.preventDefault();
 
-      setSaved(true);
+        setSaved(true);
 
-      console.log("✅ Code Saved");
-    }
+        toast.success("Code saved.");
+        console.log("✅ Code Saved");
+      }
+    };
+
+    window.addEventListener("keydown", handler);
+
+    return () => {
+      window.removeEventListener("keydown", handler);
+    };
+  }, []);
+
+  /* ---------------- EDITOR CHANGE ---------------- */
+
+  const handleEditorChange = (value: string | undefined) => {
+    setGeneratedCode(value ?? "");
+    setSaved(false);
   };
-
-  window.addEventListener("keydown", handler);
-
-  return () => {
-    window.removeEventListener("keydown", handler);
-  };
-}, []);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="min-w-0 overflow-hidden">
 
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-4 border-b border-slate-800 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
 
-          <div className="rounded-xl bg-cyan-500/10 p-3">
-            <Code2 className="text-cyan-400" />
+        {/* TITLE */}
+
+        <div className="flex min-w-0 items-center gap-3">
+
+          <div className="shrink-0 rounded-xl bg-cyan-500/10 p-3">
+            <Code2
+              className="text-cyan-400"
+              size={21}
+            />
           </div>
 
-          <div>
-            <div>
+          <div className="min-w-0">
 
-  <h2 className="text-xl font-bold text-white">
-    AuraGenComponent.tsx
-  </h2>
+            <h2 className="truncate text-lg font-bold text-white">
+              AuraGenComponent.tsx
+            </h2>
 
-  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+            <div className="mt-2 flex flex-wrap gap-2 text-xs">
 
-    <span className="rounded-full bg-cyan-500/10 px-2 py-1 text-cyan-300">
-      React
-    </span>
+              <span className="rounded-full bg-cyan-500/10 px-2.5 py-1 text-cyan-300">
+                React
+              </span>
 
-    <span className="rounded-full bg-blue-500/10 px-2 py-1 text-blue-300">
-      TypeScript
-    </span>
+              <span className="rounded-full bg-blue-500/10 px-2.5 py-1 text-blue-300">
+                TypeScript
+              </span>
 
-    <span className="rounded-full bg-violet-500/10 px-2 py-1 text-violet-300">
-      Generated by Aura AI
-    </span>
+              <span className="rounded-full bg-violet-500/10 px-2.5 py-1 text-violet-300">
+                Generated by Aura AI
+              </span>
 
-  </div>
+            </div>
 
-</div>
           </div>
 
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* ACTIONS */}
+
+        <div className="flex shrink-0 items-center gap-2">
+
+          {/* SAVE STATUS */}
 
           <span
-  className={`rounded-full px-3 py-1 text-sm font-semibold ${
-    saved
-      ? "bg-green-500/10 text-green-300"
-      : "bg-yellow-500/10 text-yellow-300"
-  }`}
->
-  {saved ? "● Saved" : "● Editing"}
-</span>
+            className={`hidden rounded-full px-3 py-1 text-xs font-semibold sm:inline-flex ${
+              saved
+                ? "bg-green-500/10 text-green-300"
+                : "bg-yellow-500/10 text-yellow-300"
+            }`}
+          >
+            {saved ? "● Saved" : "● Editing"}
+          </span>
+
+          {/* DOWNLOAD */}
 
           <button
             onClick={downloadCode}
-            className="rounded-xl border border-slate-700 bg-slate-800 p-2 transition hover:border-cyan-400"
+            title="Download TSX"
+            className="rounded-xl border border-slate-700 bg-slate-800 p-2.5 transition hover:border-cyan-400 hover:bg-slate-700"
           >
-            <Download className="text-cyan-400" size={18} />
+            <Download
+              className="text-cyan-400"
+              size={18}
+            />
           </button>
+
+          {/* COPY */}
 
           <button
             onClick={copyCode}
-            className="rounded-xl border border-slate-700 bg-slate-800 p-2 transition hover:border-cyan-400"
+            title="Copy JSX"
+            className="rounded-xl border border-slate-700 bg-slate-800 p-2.5 transition hover:border-cyan-400 hover:bg-slate-700"
           >
             {copied ? (
-              <Check className="text-green-400" size={18} />
+              <Check
+                className="text-green-400"
+                size={18}
+              />
             ) : (
-              <Copy className="text-cyan-400" size={18} />
+              <Copy
+                className="text-cyan-400"
+                size={18}
+              />
             )}
           </button>
 
+          {/* CLEAR */}
+
           <button
             onClick={clearCode}
-            className="rounded-xl border border-slate-700 bg-slate-800 p-2 transition hover:border-red-400"
+            title="Clear code"
+            className="rounded-xl border border-slate-700 bg-slate-800 p-2.5 transition hover:border-red-400 hover:bg-red-500/10"
           >
-            <Trash2 className="text-red-400" size={18} />
+            <Trash2
+              className="text-red-400"
+              size={18}
+            />
           </button>
 
         </div>
 
       </div>
 
-      {/* Status */}
-      <div className="grid grid-cols-3 border-b border-slate-800 bg-slate-800/40">
+      {/* =====================================================
+          STATUS BAR
+      ===================================================== */}
 
-        <Status title="Language" value="React TSX" />
-
-        <Status title="Renderer" value="Ready" />
+      <div className="grid grid-cols-3 border-b border-slate-800 bg-slate-900/80">
 
         <Status
-  title="Pipeline"
-  value={aiStatus}
-/>
+          title="Language"
+          value="React TSX"
+        />
+
+        <Status
+          title="Renderer"
+          value="Ready"
+        />
+
+        <Status
+          title="Pipeline"
+          value={aiStatus || "Ready"}
+        />
 
       </div>
 
-      {/* Editor */}
-      {/* Editor */}
-<div className="h-[450px] overflow-hidden rounded-2xl bg-[#0B1120]">
-  <Editor
-    height="100%"
-    defaultLanguage="typescript"
-    language="typescript"
-    theme="vs-dark"
-    value={code}
-onChange={(value) => {
-  setGeneratedCode(value ?? "");
-  setSaved(false);
-}}
-    options={{
-      fontSize: 14,
-      minimap: {
-        enabled: true,
-      },
-      wordWrap: "on",
-      automaticLayout: true,
-      scrollBeyondLastLine: false,
-      formatOnPaste: true,
-      formatOnType: true,
-      tabSize: 2,
-      roundedSelection: true,
-      cursorBlinking: "smooth",
-      smoothScrolling: true,
-    }}
-  />
-</div>
-        
+      {/* =====================================================
+          CODE EDITOR
+      ===================================================== */}
 
-      {/* Footer */}
-      <div className="flex items-center justify-between border-t border-slate-800 bg-slate-800/40 px-6 py-4">
+      <div className="h-[520px] min-w-0 overflow-hidden bg-[#0B1120] sm:h-[580px] lg:h-[620px]">
 
-        <div className="flex items-center gap-2">
+        <Editor
+          height="100%"
+          defaultLanguage="typescriptreact"
+          language="typescriptreact"
+          path="file:///AuraGenComponent.tsx"
+          theme="vs-dark"
+          value={code}
+          onChange={handleEditorChange}
 
-          <Cpu className="text-cyan-400" size={18} />
+          options={{
+            fontSize: 13,
+            lineHeight: 21,
 
-          <span className="text-sm text-slate-400">
-            AI Workspace Ready
-            <p className="text-xs text-slate-500">
-Connected with Aura AI Generator
-</p>
-          </span>
+            minimap: {
+              enabled: false,
+            },
+
+            wordWrap: "on",
+
+            automaticLayout: true,
+
+            scrollBeyondLastLine: false,
+
+            formatOnPaste: true,
+
+            formatOnType: true,
+
+            tabSize: 2,
+
+            insertSpaces: true,
+
+            smoothScrolling: true,
+
+            cursorBlinking: "smooth",
+
+            padding: {
+              top: 16,
+              bottom: 16,
+            },
+
+            folding: true,
+
+            renderWhitespace: "selection",
+
+            roundedSelection: true,
+
+            scrollbar: {
+              verticalScrollbarSize: 8,
+              horizontalScrollbarSize: 8,
+            },
+
+            suggest: {
+              showMethods: true,
+              showFunctions: true,
+              showVariables: true,
+            },
+
+            // Reduce unnecessary editor noise
+            overviewRulerLanes: 0,
+
+            renderLineHighlight: "line",
+
+            hideCursorInOverviewRuler: true,
+          }}
+        />
+
+      </div>
+
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
+
+      <div className="flex flex-col gap-4 border-t border-slate-800 bg-slate-900/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between">
+
+        {/* WORKSPACE STATUS */}
+
+        <div className="flex min-w-0 items-center gap-2">
+
+          <Cpu
+            className="shrink-0 text-cyan-400"
+            size={18}
+          />
+
+          <div className="min-w-0">
+
+            <p className="text-sm font-medium text-slate-300">
+              AI Workspace Ready
+            </p>
+
+            <p className="truncate text-xs text-slate-500">
+              Connected with Aura AI Generator
+            </p>
+
+          </div>
 
         </div>
 
-        <div className="flex items-center gap-6 text-sm">
+        {/* CODE INFORMATION */}
+
+        <div className="flex flex-wrap items-center gap-4 text-xs sm:gap-6">
 
           <span className="text-cyan-300">
-            Lines : {code.split("\n").length}
+            Lines: {code.split("\n").length}
           </span>
 
           <span className="text-cyan-300">
-            Characters : {code.length}
+            Characters: {code.length}
           </span>
 
           <div className="flex items-center gap-2">
 
             <FileCode2
-              size={18}
+              size={17}
               className="text-cyan-400"
             />
 
@@ -277,6 +394,10 @@ Connected with Aura AI Generator
   );
 }
 
+/* =========================================================
+   STATUS COMPONENT
+========================================================= */
+
 function Status({
   title,
   value,
@@ -284,15 +405,14 @@ function Status({
   title: string;
   value: string;
 }) {
-
   return (
-    <div className="border-r border-slate-700 p-4 last:border-r-0">
+    <div className="min-w-0 border-r border-slate-800 p-3 last:border-r-0 sm:p-4">
 
-      <p className="text-xs uppercase tracking-wider text-slate-500">
+      <p className="truncate text-[10px] uppercase tracking-wider text-slate-500 sm:text-xs">
         {title}
       </p>
 
-      <p className="mt-1 font-semibold text-white">
+      <p className="mt-1 truncate text-sm font-semibold text-white sm:text-base">
         {value}
       </p>
 

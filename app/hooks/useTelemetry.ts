@@ -9,7 +9,8 @@ export default function useTelemetry() {
   const cognitiveLoad = useMemo(() => {
     let score = 0;
 
-    score += Math.min(telemetry.velocity / 20, 20);
+    score += Math.min(telemetry.velocity / 80, 15);
+    score += Math.min(telemetry.clicks / 10, 10);
     score += Math.min(telemetry.rapidClicks * 5, 20);
     score += Math.min(telemetry.hesitationTime / 3, 20);
     score += Math.min(telemetry.scrollCount / 10, 20);

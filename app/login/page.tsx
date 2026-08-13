@@ -8,6 +8,7 @@ import { FaGithub } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { loginUser } from "../services/auth";
 import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 
 
 import AuthBackground from "../components/auth/AuthBackground";
@@ -18,6 +19,7 @@ import PasswordInput from "../components/auth/PasswordInput";
 export default function LoginPage() {
   const [remember, setRemember] = useState(false);
   const router = useRouter();
+  const { login, isAuthenticated, loading: authLoading } = useAuth();
  
 
 const [email, setEmail] = useState("");
@@ -48,12 +50,7 @@ if (!password.trim()) {
 
     console.log(res.data);
 
-    if (remember) {
-  localStorage.setItem("token", res.data.token);
-} else {
-  sessionStorage.setItem("token", res.data.token);
-}
-
+    login(res.data.token, res.data.user, remember);
     toast.success("Login Successful");
 
 router.push("/");
@@ -71,16 +68,10 @@ router.push("/");
 };
 
 useEffect(() => {
-  const token =
-  localStorage.getItem("token") ||
-  sessionStorage.getItem("token");
-
-  if (token) {
-    toast.success("Login Successful");
-
-router.push("/");
+  if (!authLoading && isAuthenticated) {
+    router.replace("/");
   }
-}, [router]);
+}, [authLoading, isAuthenticated, router]);
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">

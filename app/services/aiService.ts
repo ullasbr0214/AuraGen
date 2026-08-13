@@ -56,7 +56,7 @@ export function generateAuraCode(
           "Backend/AI pipeline did not respond within 20 seconds."
         )
       );
-    }, 20000);
+    }, 60000);
 
     const cleanup = () => {
       socket.off(
