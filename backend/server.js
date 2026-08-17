@@ -4,6 +4,7 @@ const http = require("http");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const { Server } = require("socket.io");
+const passport = require("./config/passport");
 
 const { generateComponent } = require("./generate-component");
 const authRoutes = require("./routes/authRoutes");
@@ -13,7 +14,10 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = Number(process.env.PORT || 5000);
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+const CLIENT_URL =
+  process.env.FRONTEND_URL ||
+  process.env.CLIENT_URL ||
+  "http://localhost:3000";
 const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/auragen";
 
 const allowedOrigins = [
@@ -42,6 +46,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options(/.*/, cors(corsOptions));
 app.use(express.json({ limit: "2mb" }));
+
+// Passport OAuth initialization
+app.use(passport.initialize());
 
 const io = new Server(server, {
   path: "/socket.io",
@@ -163,12 +170,12 @@ async function start() {
 
   app.locals.databaseConnected = databaseConnected;
 
-  server.listen(PORT, () => {
-    console.log(`[Server] Running on http://localhost:${PORT}`);
-    console.log(`[Socket] Socket.IO initialized at /socket.io`);
-    console.log(`[CORS] Allowed frontend: ${CLIENT_URL}`);
-    console.log(`[API] Health: http://localhost:${PORT}/api/health`);
-  });
+  server.listen(PORT, "0.0.0.0", () => {
+  console.log(`[Server] Running on port ${PORT}`);
+  console.log(`[Socket] Socket.IO initialized at /socket.io`);
+  console.log(`[CORS] Allowed frontend: ${CLIENT_URL}`);
+  console.log(`[API] Health: /api/health`);
+});
 }
 
 process.on("SIGINT", async () => {

@@ -83,3 +83,86 @@ exports.login = async (req, res) => {
     return res.status(500).json({ message: error.message || 'Server error during login.' });
   }
 };
+
+// GET /api/auth/google/callback
+exports.googleCallback = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.redirect(
+        "http://localhost:3000/login?error=google"
+      );
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET || "auragen_secret_key",
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000";
+
+    return res.redirect(
+      `${frontendUrl}/auth/callback?token=${encodeURIComponent(
+        token
+      )}`
+    );
+  } catch (error) {
+    console.error(
+      "Google callback error:",
+      error
+    );
+
+    return res.redirect(
+      "http://localhost:3000/login?error=google"
+    );
+  }
+};
+
+// GET /api/auth/github/callback
+exports.githubCallback = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.redirect(
+        "http://localhost:3000/login?error=github"
+      );
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET || "auragen_secret_key",
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    const frontendUrl =
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000";
+
+    return res.redirect(
+      `${frontendUrl}/auth/callback?token=${encodeURIComponent(
+        token
+      )}`
+    );
+  } catch (error) {
+    console.error("GitHub callback error:", error);
+
+    return res.redirect(
+      "http://localhost:3000/login?error=github"
+    );
+  }
+};
