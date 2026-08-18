@@ -19,6 +19,11 @@ const CLIENT_URL =
   process.env.CLIENT_URL ||
   "https://auragen-1.onrender.com";
 
+  const MONGO_URI =
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  "mongodb://127.0.0.1:27017/auragen";
+
 const allowedOrigins = [
   "https://auragen-1.onrender.com",
   CLIENT_URL,
@@ -52,11 +57,7 @@ const io = new Server(server, {
   path: "/socket.io",
   transports: ["polling", "websocket"],
   cors: {
-    origin: [
-      "https://auragen-1.onrender.com",
-      "http://localhost:3000",
-      "http://127.0.0.1:3000",
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },

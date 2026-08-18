@@ -63,7 +63,7 @@ const [backendDatabase, setBackendDatabase] = useState<string>("Checking...");
     try {
       const apiBase =
         process.env.NEXT_PUBLIC_API_URL ||
-        "http://localhost:5000/api";
+"https://auragen-backend-taw0.onrender.com/api";
 
       const response = await fetch(`${apiBase}/health`, {
         method: "GET",

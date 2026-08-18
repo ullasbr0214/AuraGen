@@ -163,7 +163,11 @@ useEffect(() => {
 <button
   type="button"
   onClick={() => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://auragen-backend-taw0.onrender.com/api";
+
+window.location.href = `${API_URL}/auth/google`;
   }}
   className="flex w-full items-center justify-center gap-3 rounded-2xl border border-cyan-500 bg-slate-900/70 py-3 font-medium text-white transition hover:border-cyan-400 hover:bg-slate-800"
 >
@@ -175,8 +179,11 @@ useEffect(() => {
           <button
   type="button"
   onClick={() => {
-    window.location.href =
-      "http://localhost:5000/api/auth/github";
+    const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://auragen-backend-taw0.onrender.com/api";
+
+window.location.href = `${API_URL}/auth/github`;
   }}
   className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-800"
 >

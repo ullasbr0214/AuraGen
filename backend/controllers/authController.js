@@ -91,7 +91,7 @@ exports.googleCallback = async (req, res) => {
 
     if (!user) {
       return res.redirect(
-        "http://localhost:3000/login?error=google"
+        `${process.env.FRONTEND_URL}/login?error=google`
       );
     }
 
@@ -122,7 +122,7 @@ exports.googleCallback = async (req, res) => {
     );
 
     return res.redirect(
-      "http://localhost:3000/login?error=google"
+      `${process.env.FRONTEND_URL}/login?error=google`
     );
   }
 };
@@ -134,7 +134,7 @@ exports.githubCallback = async (req, res) => {
 
     if (!user) {
       return res.redirect(
-        "http://localhost:3000/login?error=github"
+        `${process.env.FRONTEND_URL}/login?error=github`
       );
     }
 
@@ -162,7 +162,7 @@ exports.githubCallback = async (req, res) => {
     console.error("GitHub callback error:", error);
 
     return res.redirect(
-      "http://localhost:3000/login?error=github"
+      `${process.env.FRONTEND_URL}/login?error=github`
     );
   }
 };
