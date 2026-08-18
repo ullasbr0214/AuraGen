@@ -255,7 +255,7 @@ export default function Sidebar() {
               <div>
 
                 <p className="font-semibold text-white">
-                  {user?.name || user?.username || "AuraGen User"}
+                  {user?.username || "AuraGen User"}
                 </p>
 
                 <p className="text-sm text-green-400">
