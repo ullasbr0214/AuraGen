@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const token = searchParams.get("token");
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
 
     if (!token) {
       router.replace("/login?error=google");
@@ -18,7 +18,7 @@ export default function AuthCallbackPage() {
     localStorage.setItem("token", token);
 
     router.replace("/");
-  }, [router, searchParams]);
+  }, [router]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
