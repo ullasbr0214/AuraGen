@@ -17,10 +17,10 @@ const PORT = Number(process.env.PORT || 5000);
 const CLIENT_URL =
   process.env.FRONTEND_URL ||
   process.env.CLIENT_URL ||
-  "http://localhost:3000";
-const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/auragen";
+  "https://auragen-1.onrender.com";
 
 const allowedOrigins = [
+  "https://auragen-1.onrender.com",
   CLIENT_URL,
   "http://localhost:3000",
   "http://127.0.0.1:3000",
@@ -28,9 +28,7 @@ const allowedOrigins = [
 
 function isAllowedOrigin(origin) {
   if (!origin) return true;
-  if (allowedOrigins.includes(origin)) return true;
-  // Useful when the frontend is temporarily exposed with ngrok.
-  return /^https:\/\/([a-z0-9-]+)\.ngrok-free\.dev$/i.test(origin);
+  return allowedOrigins.includes(origin);
 }
 
 const corsOptions = {
@@ -54,12 +52,12 @@ const io = new Server(server, {
   path: "/socket.io",
   transports: ["polling", "websocket"],
   cors: {
-    origin(origin, callback) {
-      if (isAllowedOrigin(origin)) return callback(null, true);
-      return callback(new Error(`Socket CORS blocked origin: ${origin}`), false);
-    },
+    origin: [
+      "https://auragen-1.onrender.com",
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+    ],
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
     credentials: true,
   },
 });
