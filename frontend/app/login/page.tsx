@@ -162,7 +162,10 @@ useEffect(() => {
 
 <button
   type="button"
-  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-cyan-500 hover:bg-slate-800"
+  onClick={() => {
+    window.location.href = "http://localhost:5000/api/auth/google";
+  }}
+  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-cyan-500 bg-slate-900/70 py-3 font-medium text-white transition hover:border-cyan-400 hover:bg-slate-800"
 >
   <FcGoogle size={20} />
   Continue with Google
@@ -170,15 +173,16 @@ useEffect(() => {
           {/* GitHub */}
 
           <button
-            type="button"
-            className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-800"
-          >
-
-            <FaGithub size={20} />
-
-            Continue with GitHub
-
-          </button>
+  type="button"
+  onClick={() => {
+    window.location.href =
+      "http://localhost:5000/api/auth/github";
+  }}
+  className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-700 bg-slate-900/70 py-3 font-medium text-white transition hover:border-violet-500 hover:bg-slate-800"
+>
+  <FaGithub size={20} />
+  Continue with GitHub
+</button>
 
           {/* Register */}
 
